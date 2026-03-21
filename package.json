@@ -1,0 +1,27 @@
+{
+  "name": "expensetracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/budhathoki10/Expenses-tracker-Backend.git"
+  },
+  "author": "Kushal and rishav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/budhathoki10/Expenses-tracker-Backend/issues"
+  },
+  "homepage": "https://github.com/budhathoki10/Expenses-tracker-Backend#readme",
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.1"
+  }
+}
