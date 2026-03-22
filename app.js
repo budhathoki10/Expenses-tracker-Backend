@@ -1,9 +1,29 @@
-const express= require("express")
+const express= require("express");
+const mongoose= require("mongoose")
 const app= express();
+app.use(express.json())
+const cookieParser= require('cookie-parser');
+const register = require("./routes/register.route");
+const verifyOTP= require("./routes/verifyOTP.route")
+const login= require("./routes/login.routes")
+app.use(cookieParser())
+require('dotenv').config()
 
 app.post("/",(req,res)=>{
     res.status(200).json("hello world");
 })
+mongoose.connect(process.env.MONGODB_URI)
+.then(()=>{
+    console.log("Sucessfully connected to mongo db")
+})
+.catch((error)=>{
+    console.log(error)
+    console.log("Error in connecting a mongo db")
+})
+
+app.use('/api',register)
+app.use('/api',verifyOTP)
+app.use('/api',login)
 
 app.listen(5000,()=>{
     console.log(` http://localhost:5000`)
