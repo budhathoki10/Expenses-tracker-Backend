@@ -9,6 +9,7 @@ const register = require("./routes/register.route");
 const verifyOTP= require("./routes/verifyOTP.route")
 const login= require("./routes/login.routes")
 const loginWithGoogle= require("./routes/LoginWithGoogle.routes")
+const logout= require("./SignOut/logout.SignOut")
 app.use(cookieParser())
 
 app.post("/",(req,res)=>{
@@ -27,6 +28,7 @@ app.use('/api',register)
 app.use('/api',verifyOTP)
 app.use('/api',login)
 app.use('/api',loginWithGoogle)
+app.use('/api',logout)
 
 app.listen(5000,()=>{
     console.log(` http://localhost:5000`)
