@@ -24,7 +24,7 @@ const register = async (req, res) => {
       password: hashedPassword,
     });
     await newUser.save();
-    generateOTP(email);
+   await generateOTP(email);
     const user = await userModel.findOne({ email: email });
     console.log("registered user is",user)
     console.log("registered user is",user.userName)

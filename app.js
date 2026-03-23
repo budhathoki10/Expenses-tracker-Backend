@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express= require("express");
 const mongoose= require("mongoose")
 const app= express();
@@ -7,7 +9,6 @@ const register = require("./routes/register.route");
 const verifyOTP= require("./routes/verifyOTP.route")
 const login= require("./routes/login.routes")
 app.use(cookieParser())
-require('dotenv').config()
 
 app.post("/",(req,res)=>{
     res.status(200).json("hello world");

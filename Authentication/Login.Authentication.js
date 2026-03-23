@@ -12,6 +12,11 @@ const Login = async (req, res) => {
         message: "this email is not registered yet",
       });
     }
+    if(findEmail.OTP!=null){
+ return res.status(400).json({
+        message: "please verify your otp first",
+      });
+    }
 
     const checkPassword = await bcrypt.compare(
       password,
@@ -36,7 +41,7 @@ const Login = async (req, res) => {
     res
       .cookie("Cookie-token", token)
       .status(200)
-      .json({ message: "user registered sucessfully",
+      .json({ message: "user logged in sucessfully",
         token:token
       });
   } catch (error) {
