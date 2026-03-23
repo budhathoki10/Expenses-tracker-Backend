@@ -1,0 +1,14 @@
+day 1
+- login signup completed
+- use nodemailer for sending email but faced error
+
+-----------------------------------------------------------------------------------------------
+
+day 2
+- fix the error of nodemailer
+- logout functionality
+- for login with google we will use passport.js
+npm i passport passport-google-oauth20 express-session 
+passport= authentication
+express-session= user session
+

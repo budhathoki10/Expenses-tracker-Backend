@@ -10,6 +10,9 @@ const verifyOTP= require("./routes/verifyOTP.route")
 const login= require("./routes/login.routes")
 const loginWithGoogle= require("./routes/LoginWithGoogle.routes")
 const logout= require("./SignOut/logout.SignOut")
+const passport= require("passport")
+const session= require('express-session')
+const googleStrategy= require("passport-google-oauth20").Strategy
 app.use(cookieParser())
 
 app.post("/",(req,res)=>{
@@ -24,6 +27,15 @@ mongoose.connect(process.env.MONGODB_URI)
     console.log("Error in connecting a mongo db")
 })
 
+app.use(
+    session({
+        secret:"secret",
+        resave:false,
+        saveUninitialized:true
+    })
+)
+app.use(passport.initialize())
+app.use(passport.session())
 app.use('/api',register)
 app.use('/api',verifyOTP)
 app.use('/api',login)
