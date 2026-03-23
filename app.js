@@ -8,6 +8,7 @@ const cookieParser= require('cookie-parser');
 const register = require("./routes/register.route");
 const verifyOTP= require("./routes/verifyOTP.route")
 const login= require("./routes/login.routes")
+const loginWithGoogle= require("./routes/LoginWithGoogle.routes")
 app.use(cookieParser())
 
 app.post("/",(req,res)=>{
@@ -25,6 +26,7 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api',register)
 app.use('/api',verifyOTP)
 app.use('/api',login)
+app.use('/api',loginWithGoogle)
 
 app.listen(5000,()=>{
     console.log(` http://localhost:5000`)
