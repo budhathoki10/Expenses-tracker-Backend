@@ -1,5 +1,5 @@
 const z = require("zod");
-const userRegister = z.object({
+const validate = z.object({
   userName: z.string().min(2, "user name must have at least 2 character"),
   email: z.string().email("invalid email format"),
   password: z
@@ -11,4 +11,4 @@ const userRegister = z.object({
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
     ),
 });
-module.exports = userRegister;
+module.exports = validate;

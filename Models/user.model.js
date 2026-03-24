@@ -14,6 +14,7 @@ const userSchema = mongoose.Schema(
 
     password: {
       type: String,
+      default:null
     },
     OTP: {
       type: String,

@@ -2,13 +2,13 @@ const userModel = require("../Models/user.model");
 const express = require("express");
 const app = express.Router();
 const bcrypt = require("bcryptjs");
-const userRegister = require("../Validation/user.validation");
+const validate = require("../Validation/register.validation");
 const z = require("zod");
 const generateOTP = require("../OTP/verifyOTP/generateOTP");
 const sendEmail = require("../utils/nodemailer.utils");
 const register = async (req, res) => {
   try {
-    const parsedData = userRegister.parse(req.body);
+    const parsedData = validate.parse(req.body);
     const { userName, email, password } = parsedData;
     const findEmail = await userModel.findOne({ email: email });
     if (findEmail) {
