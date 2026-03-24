@@ -41,8 +41,6 @@ app.use("/api", loginWithGoogle);
 app.use("/api", logout);
 
 
-
-
 app.listen(5000, () => {
   console.log("Server running at http://localhost:5000");
 });
