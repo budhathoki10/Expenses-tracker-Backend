@@ -49,3 +49,4 @@ profile is {
 }
 
 - user have to enter a password for the system for later on purpose so done that too 
+- view own profile

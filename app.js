@@ -11,6 +11,7 @@ const login = require("./routes/login.routes");
 const loginWithGoogle = require("./routes/LoginWithGoogle.routes");
 const logout = require("./SignOut/logout.SignOut");
 const configureGoogleAuth = require("./LoginWithGoogle/google.loginWithGoogle"); 
+const viewOwnProfile= require("./routes/viewOwnProfile.route")
 
 const app = express();
 app.use(express.json());
@@ -38,6 +39,8 @@ app.use("/api", register);
 app.use("/api", verifyOTP);
 app.use("/api", login);
 app.use("/api", loginWithGoogle);
+app.use("/api", viewOwnProfile);
+
 app.use("/api", logout);
 
 

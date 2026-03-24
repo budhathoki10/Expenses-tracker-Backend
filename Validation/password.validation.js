@@ -4,7 +4,7 @@ const validatePassword= z.object({
       password: z
         .string()
         .min(4, "password must be atleast 4 characters")
-        .max(10, "password must not be more than 20 character")
+        .max(12, "password must not be more than 12 character")
         .regex(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
           "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
