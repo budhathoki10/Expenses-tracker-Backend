@@ -9,10 +9,12 @@ const register = require("./routes/register.route");
 const verifyOTP = require("./routes/verifyOTP.route");
 const login = require("./routes/login.routes");
 const loginWithGoogle = require("./routes/LoginWithGoogle.routes");
-const logout = require("./SignOut/logout.SignOut");
+const LogoutRouters = require("./routes/Logout.routes");
 const configureGoogleAuth = require("./LoginWithGoogle/google.loginWithGoogle"); 
-const viewOwnProfile= require("./routes/viewOwnProfile.route")
+const viewWallet = require("./routes/viewWallet.route");
 const expensesMoney = require("./routes/expenses.route")
+const deleteExpenseRoute= require("./routes/deleteexpense.route")
+const updateExpenseRoute= require("./routes/updateexpense.route")
 
 const app = express();
 app.use(express.json());
@@ -39,11 +41,13 @@ configureGoogleAuth();
 app.use("/api", register);
 app.use("/api", verifyOTP);
 app.use("/api", login);
+app.use("/api", LogoutRouters);
 app.use("/api", loginWithGoogle);
-app.use("/api", viewOwnProfile);
+app.use("/api", viewWallet);
 app.use("/api", expensesMoney);
+app.use("/api", deleteExpenseRoute);
+app.use("/api", updateExpenseRoute);
 
-app.use("/api", logout);
 
 
 app.listen(5000, () => {

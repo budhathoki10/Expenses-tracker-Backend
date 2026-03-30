@@ -2,17 +2,23 @@ const jwt= require("jsonwebtoken")
 const userModel = require("../Models/user.model")
 const Authentication= async(req,res,next)=>{
 try {
+        console.log("=== AUTH HIT ===");
+    console.log("URL:", req.url);          // ← add at very top
+    console.log("METHOD:", req.method);
     const token= (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies['Cookie-token']
     if(!token){
-res.status(400).json({
+return res.status(400).json({
     success:false,
     message:"unauthorized, token not found"
 })
     }
+     console.log("TOKEN:", token);           // ← add this
+    console.log("COOKIES:", req.cookies);   // ← add this
+    console.log("HEADERS:", req.headers);   // ← add this
 
 // veryifying the token
 const verifytoken= jwt.verify(token,process.env.ACCESS_TOKEN_SECERET_KEY)
-console.log(verifytoken)
+// console.log(verifytoken)
 if(!verifytoken){
    return  res.status(400).json({
     success:false,
