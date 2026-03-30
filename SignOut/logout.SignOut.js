@@ -3,7 +3,7 @@ try {
 
     if(req.cookies && req.cookies["Cookie-token"]){
         res.clearCookie("Cookie-token")
-        console.log("the cookie is",req.cookies['Cookie-token'])
+        // console.log("the cookie is",req.cookies['Cookie-token'])
         return res.status(200).json({
             success:true,
             message:"Logout sucessfully"

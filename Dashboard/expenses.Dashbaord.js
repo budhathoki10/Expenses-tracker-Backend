@@ -3,7 +3,6 @@ const z = require("zod");
 const userModel = require("../Models/user.model");
 const walletModel = require("../Models/wallet.model");
 const validateExpense = require("../Validation/expenses.validation");
-const { da } = require("zod/locales");
 const ExpensesData = async (req, res) => {
 try {
       const parsedData = validateExpense.parse(req.body);
@@ -11,9 +10,10 @@ try {
       // console.log("hello")
       // console.log("user id is",req.user._id)
 
-    const findWallet= await walletModel.findOne({userID:req.user._id})
+    let findWallet= await walletModel.findOne({userID:req.user._id})
+    console.log("testing")
     if(!findWallet){
-       await walletModel.create({userID:req.user._id, balance:1000})
+       findWallet= await walletModel.create({userID:req.user._id, balance:1000})
     }
     if(type === "Expense" && findWallet.balance < amount){
         return res.status(400).json({ 

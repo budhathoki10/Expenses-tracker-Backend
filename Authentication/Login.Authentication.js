@@ -46,8 +46,7 @@ const Login = async (req, res) => {
       });
   } catch (error) {
      res
-      .cookie("Cookie-token", token)
-      .status(200)
+      .status(500)
       .json({
         sucess:false,
         message: "internal server error",

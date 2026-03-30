@@ -50,3 +50,14 @@ profile is {
 
 - user have to enter a password for the system for later on purpose so done that too 
 - view own profile
+
+-----------------------------------------------------------------------------------------------
+day 6:
+- user dashbaord (wallet)
+- add expenses and money increase or decrease on the basis of income or expenses
+
+-----------------------------------------------------------------------------------------------
+day 7:
+- delete expense 
+note: req.query is for filtering and req.params is for find that exact
+- update expenses 
