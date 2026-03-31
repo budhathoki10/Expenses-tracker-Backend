@@ -34,9 +34,13 @@ app.use(
   })
 );
 // app.use(cors())
+const allowedOrigins = [
+  "http://localhost:5173",
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173/', 
-  credentials: true, 
+  origin: allowedOrigins,
+  credentials: true,
 }));
 app.use(passport.initialize());
 app.use(passport.session());
