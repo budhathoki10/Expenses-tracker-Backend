@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const session = require("express-session");
+const cors = require("cors");
 
 const register = require("./routes/register.route");
 const verifyOTP = require("./routes/verifyOTP.route");
@@ -32,7 +33,11 @@ app.use(
     saveUninitialized: false,                       
   })
 );
-
+// app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173/', 
+  credentials: true, 
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
