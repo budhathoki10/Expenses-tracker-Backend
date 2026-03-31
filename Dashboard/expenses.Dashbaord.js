@@ -3,8 +3,8 @@ const z = require("zod");
 const userModel = require("../Models/user.model");
 const walletModel = require("../Models/wallet.model");
 const validateExpense = require("../Validation/expenses.validation");
-const emailTemplate = require("../Email/ExpeseTemplate.email");
-const sendEmail = require("../Email/sendEmail");
+// const emailTemplate = require("../Email/ExpeseTemplate.email");
+// const sendEmail = require("../Email/sendEmail");
 const ExpensesData = async (req, res) => {
 try {
       const parsedData = validateExpense.parse(req.body);
