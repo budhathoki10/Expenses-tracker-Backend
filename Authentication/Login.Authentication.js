@@ -39,7 +39,12 @@ const Login = async (req, res) => {
       },
     );
     res
-      .cookie("Cookie-token", token)
+      .cookie("Cookie-token", token,{
+          httpOnly: true,
+  secure: false,   
+  sameSite: "none",   // required for cross-origin cookies
+
+      })
       .status(200)
       .json({ message: "user logged in sucessfully",
         token:token
