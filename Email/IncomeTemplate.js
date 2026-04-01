@@ -1,11 +1,11 @@
-const expenseEmailTemplate = (populatedData, findWallet) => {
+const incomeEmailTemplate = (populatedData, findWallet) => {
   return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Expense Added</title>
+  <title>Income Added</title>
 </head>
 <body style="
   margin: 0;
@@ -13,12 +13,12 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
   background-color: #f0ede8;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 ">
- 
+
   <!-- Wrapper -->
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f0ede8; padding: 40px 0;">
     <tr>
       <td align="center">
- 
+
         <!-- Card -->
         <table width="600" cellpadding="0" cellspacing="0" style="
           background-color: #ffffff;
@@ -26,11 +26,11 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
           overflow: hidden;
           box-shadow: 0 4px 24px rgba(0,0,0,0.08);
         ">
- 
+
           <!-- Header -->
           <tr>
             <td style="
-              background: linear-gradient(135deg, #2d6a3f 0%, #3d8c54 100%);
+              background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
               padding: 36px 40px;
               text-align: center;
             ">
@@ -48,16 +48,16 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
                 font-size: 13px;
                 color: rgba(255,255,255,0.75);
                 letter-spacing: 0.3px;
-              ">Where your spending finds balance</p>
+              ">Where your income grows</p>
             </td>
           </tr>
- 
+
           <!-- Icon + Title -->
           <tr>
             <td style="padding: 36px 40px 0; text-align: center;">
               <div style="
                 display: inline-block;
-                background-color: #edf7f0;
+                background-color: #e0f2fe;
                 border-radius: 50%;
                 width: 64px;
                 height: 64px;
@@ -65,23 +65,27 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
                 text-align: center;
                 font-size: 28px;
                 margin-bottom: 16px;
-              ">💸</div>
+              ">💰</div>
               <h1 style="
                 margin: 0 0 8px;
                 font-size: 22px;
                 font-weight: 700;
                 color: #111827;
-              ">Expense Recorded</h1>
+              ">Income Recorded</h1>
               <p style="
                 margin: 0;
                 font-size: 14px;
                 color: #6b7280;
                 line-height: 1.6;
-              "><strong style="color: #2d6a3f;">Hi ${populatedData?.userID?.email}, your expense has been successfully added to your account. your updated balance is $ <b>${findWallet.balance}</b> </strong></p>
+              ">
+                <strong style="color: #2563eb;">Hi ${populatedData?.userID?.userName},</strong> 
+                your income has been successfully added to your account. 
+                Your updated balance is <b>$${findWallet.balance}</b>.
+              </p>
             </td>
           </tr>
- 
-          <!-- Expense Details Card -->
+
+          <!-- Income Details Card -->
           <tr>
             <td style="padding: 28px 40px;">
               <table width="100%" cellpadding="0" cellspacing="0" style="
@@ -96,10 +100,10 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
                     border-bottom: 1px solid #e5e7eb;
                     background-color: #f3f4f6;
                   ">
-                    <p style="margin: 0; font-size: 12px; font-weight: 700; color: #9ca3af; letter-spacing: 1px; text-transform: uppercase;">Expense Details</p>
+                    <p style="margin: 0; font-size: 12px; font-weight: 700; color: #9ca3af; letter-spacing: 1px; text-transform: uppercase;">Income Details</p>
                   </td>
                 </tr>
- 
+
                 <!-- Category -->
                 <tr>
                   <td style="padding: 14px 20px; border-bottom: 1px solid #e5e7eb;">
@@ -111,28 +115,28 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
                     </table>
                   </td>
                 </tr>
- 
+
                 <!-- Amount -->
                 <tr>
                   <td style="padding: 14px 20px; border-bottom: 1px solid #e5e7eb;">
                     <table width="100%" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="font-size: 13px; color: #6b7280;">💰 Amount</td>
+                        <td style="font-size: 13px; color: #6b7280;">💵 Amount</td>
                         <td align="right">
                           <span style="
                             font-size: 15px;
                             font-weight: 700;
-                            color: #dc2626;
-                            background-color: #fef2f2;
+                            color: #16a34a;
+                            background-color: #ecfdf5;
                             padding: 3px 10px;
                             border-radius: 20px;
-                          ">- $${populatedData.amount || '0.00'}</span>
+                          ">+ $${populatedData.amount || '0.00'}</span>
                         </td>
                       </tr>
                     </table>
                   </td>
                 </tr>
- 
+
                 <!-- Date -->
                 <tr>
                   <td style="padding: 14px 20px; border-bottom: 1px solid #e5e7eb;">
@@ -144,7 +148,7 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
                     </table>
                   </td>
                 </tr>
- 
+
                 <!-- Note -->
                 <tr>
                   <td style="padding: 14px 20px;">
@@ -156,38 +160,39 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
                     </table>
                   </td>
                 </tr>
- 
+
               </table>
             </td>
           </tr>
- 
-          <!-- Total Budget Tip -->
+
+          <!-- Tip -->
           <tr>
             <td style="padding: 0 40px 28px;">
               <table width="100%" cellpadding="0" cellspacing="0" style="
-                background: linear-gradient(135deg, #edf7f0, #d1fae5);
+                background: linear-gradient(135deg, #e0f2fe, #bae6fd);
                 border-radius: 12px;
                 padding: 16px 20px;
-                border-left: 4px solid #2d6a3f;
+                border-left: 4px solid #2563eb;
               ">
                 <tr>
                   <td>
-                    <p style="margin: 0 0 4px; font-size: 13px; font-weight: 700; color: #2d6a3f;">💡 Spend Wise Tip</p>
+                    <p style="margin: 0 0 4px; font-size: 13px; font-weight: 700; color: #2563eb;">💡 Spend Wise Tip</p>
                     <p style="margin: 0; font-size: 12px; color: #374151; line-height: 1.6;">
-                      Track your daily expenses to stay within your monthly budget. Small savings add up over time!
+                      Save a portion of every income you earn. Building reserves ensures financial stability for the future.
                     </p>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
+
           <!-- Divider -->
           <tr>
             <td style="padding: 0 40px;">
               <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0;" />
             </td>
           </tr>
- 
+
           <!-- Footer -->
           <tr>
             <td style="padding: 24px 40px; text-align: center;">
@@ -199,17 +204,15 @@ const expenseEmailTemplate = (populatedData, findWallet) => {
               </p>
             </td>
           </tr>
- 
+
         </table>
-        <!-- End Card -->
- 
       </td>
     </tr>
   </table>
- 
+
 </body>
 </html>
   `;
 };
- 
-module.exports = expenseEmailTemplate;
+
+module.exports = incomeEmailTemplate;

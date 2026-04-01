@@ -61,3 +61,10 @@ day 7:
 - delete expense 
 note: req.query is for filtering and req.params is for find that exact
 - update expenses 
+
+-----------------------------------------------------------------------------------------------
+
+day 8
+- fixed cors
+- send email in income + expenses+ email wiring 
+- fixed all the errors 
