@@ -68,3 +68,10 @@ day 8
 - fixed cors
 - send email in income + expenses+ email wiring 
 - fixed all the errors 
+
+-----------------------------------------------------------------------------------------------
+
+day 9
+- fix the registration
+- save cookie via otp conformation no need to redirect to logout
+- send message from about page section
