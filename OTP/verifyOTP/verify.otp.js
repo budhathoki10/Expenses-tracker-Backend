@@ -1,4 +1,6 @@
 const userModel = require("../../Models/user.model");
+const jwt = require("jsonwebtoken");
+const emailHandler = require("../../EmailWiring/email.wiring");
 const verifyOTP = async (req, res) => {
 try {
       const { email, otp } = req.body
@@ -29,10 +31,35 @@ try {
       findUser.OTPexpiryDate = null;
       await findUser.save();
     
-      return res.status(200).json({
-        success: true,
-        message: "OTP verified sucessfully",
-      });
+      // return res.status(200).json({
+      //   success: true,
+      //   message: "OTP verified sucessfully",
+      // });
+
+
+          const token = jwt.sign(
+            {
+              id: findUser._id,
+              email: findUser.email,
+            },
+            process.env.ACCESS_TOKEN_SECERET_KEY,
+            {
+              expiresIn: process.env.EXCESS_TOKEN_EXPIRE_IN,
+            },
+          );
+          res
+            .cookie("Cookie-token", token,{
+                httpOnly: true,
+        secure: false,   
+        sameSite: "none",   
+      
+            })
+            .status(200)
+            .json({ 
+              message: "OTP verified sucessfully",
+              token:token
+            });
+
 } catch (error) {
      return res.status(500).json({
         success: false,

@@ -1,7 +1,11 @@
 const otpEmailTemplate = require("../Email/OTPtemplate.Email");
-const sendEmail = require("../utils/nodemailer.utils");
+// const sendEmail = require("../utils/nodemailer.utils");
 const expenseEmailTemplate = require("../Email/ExpeseTemplate.email");
 const incomeEmailTemplate = require("../Email/IncomeTemplate");
+// const sendPersonalEmail= require("../utils/nodemailer.utils");
+const { sendEmail, sendPersonalEmail } = require("../utils/nodemailer.utils");
+const adminContactNotificationTemplate = require("../Email/adminContactNotificationTemplate.email");
+
 const emailHandler= {
 
     sendOTP:async (user)=>{
@@ -15,7 +19,13 @@ const emailHandler= {
     IncomeEmail:async(populatedData, findWallet)=>{
         const content = incomeEmailTemplate(populatedData, findWallet);
         await sendEmail(populatedData?.userID?.email, "Income Added", content);
+    },
+    sendPersonalEmails:async(userName, email, message)=>{
+        const content= adminContactNotificationTemplate( userName, email, message );
+        await sendPersonalEmail(email, "Message from User", content);
     }
+
+    
 
 
 

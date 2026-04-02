@@ -16,6 +16,8 @@ const viewWallet = require("./routes/viewWallet.route");
 const expensesMoney = require("./routes/expenses.route")
 const deleteExpenseRoute= require("./routes/deleteexpense.route")
 const updateExpenseRoute= require("./routes/updateexpense.route")
+const sendMessage= require("./routes/sendMessage.route")
+
 
 const app = express();
 app.use(express.json());
@@ -56,6 +58,7 @@ app.use("/api", viewWallet);
 app.use("/api", expensesMoney);
 app.use("/api", deleteExpenseRoute);
 app.use("/api", updateExpenseRoute);
+app.use("/api", sendMessage);
 
 
 
