@@ -1,4 +1,4 @@
-const filterAggregation = require("../Aggregation/filter.aggregation");
+const filterAggregation = require("../Aggregation/filter.aggregation.Piechart");
 const Authentication = require("../Middleware/auth.middleware");
 const express = require("express");
 const filterRoute = express.Router();
