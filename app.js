@@ -13,10 +13,12 @@ const loginWithGoogle = require("./routes/LoginWithGoogle.routes");
 const LogoutRouters = require("./routes/Logout.routes");
 const configureGoogleAuth = require("./LoginWithGoogle/google.loginWithGoogle"); 
 const viewWallet = require("./routes/viewWallet.route");
+const viewExpenses = require("./routes/viewExpenses.route")
 const expensesMoney = require("./routes/expenses.route")
 const deleteExpenseRoute= require("./routes/deleteexpense.route")
 const updateExpenseRoute= require("./routes/updateexpense.route")
-const sendMessage= require("./routes/sendMessage.route")
+const sendMessage= require("./routes/sendMessage.route");
+
 
 
 const app = express();
@@ -59,6 +61,7 @@ app.use("/api", expensesMoney);
 app.use("/api", deleteExpenseRoute);
 app.use("/api", updateExpenseRoute);
 app.use("/api", sendMessage);
+app.use("/api", viewExpenses);
 
 
 
