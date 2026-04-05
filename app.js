@@ -18,6 +18,8 @@ const expensesMoney = require("./routes/expenses.route")
 const deleteExpenseRoute= require("./routes/deleteexpense.route")
 const updateExpenseRoute= require("./routes/updateexpense.route")
 const sendMessage= require("./routes/sendMessage.route");
+const filterRoute = require("./routes/filter.route");
+
 
 
 
@@ -62,6 +64,7 @@ app.use("/api", deleteExpenseRoute);
 app.use("/api", updateExpenseRoute);
 app.use("/api", sendMessage);
 app.use("/api", viewExpenses);
+app.use("/api", filterRoute);
 
 
 

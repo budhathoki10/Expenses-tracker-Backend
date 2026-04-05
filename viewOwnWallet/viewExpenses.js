@@ -5,7 +5,7 @@ try {
       const data = await ExpensesModel.find({ userID: req.user._id }).populate(
         "userID",
         "userName email",
-      );
+      ).sort({ Date: -1 });
     
       if (!data) {
         return res.status(404).json({
@@ -14,6 +14,7 @@ try {
         });
       }
     //   console.log(req.user.email);
+          console.log("Expenses founds:", data.length);
           console.log(req.user._id);
       return res.status(200).json({
         success: true,
