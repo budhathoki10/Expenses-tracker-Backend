@@ -75,3 +75,44 @@ day 9
 - fix the registration
 - save cookie via otp conformation no need to redirect to logout
 - send message from about page section
+
+
+-----------------------------------------------------------------------------------------------
+day 10
+- filter in bar chart
+- show the expenses in descending order
+
+const result = await ExpensesModel.aggregate([
+  {
+    $match: {
+      userID: req.user._id,
+      type: "Expense",
+      Date: { $gte: startDate, $lte: endDate }
+    }
+  },
+  {
+    $group: {
+      _id: { $month: "$Date" },
+      total: { $sum: "$amount" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,                          // hide _id number
+      month: {
+        $arrayElemAt: [
+          [                            // array of month names
+            "",                        // index 0 — empty (months start at 1)
+            "Jan", "Feb", "Mar",
+            "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep",
+            "Oct", "Nov", "Dec"
+          ],
+          "$_id"                       // use _id (1-12) as index
+        ]
+      },
+      total: 1                         // keep total
+    }
+  },
+  { $sort: { "_id": 1 } }             // sort Jan to Dec
+]); 
