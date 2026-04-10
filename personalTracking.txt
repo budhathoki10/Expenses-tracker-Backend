@@ -116,3 +116,7 @@ const result = await ExpensesModel.aggregate([
   },
   { $sort: { "_id": 1 } }             // sort Jan to Dec
 ]); 
+-----------------------------------------------------------------------------------------------
+
+day 11
+- filter expenses

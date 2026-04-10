@@ -181,8 +181,8 @@ const adminContactNotificationTemplate = (userName, email, message) => {
                   <td style="padding: 14px 20px;">
                     <table width="100%" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="font-size: 13px; color: #6b7280;">📅 Submitted On</td>
-                        <td align="right" style="font-size: 13px; font-weight: 600; color: #111827;">${new Date().toDateString()} </td>
+                        <td style="font-size: 13px; color: #6b7280;">📅 Submitted On </td>
+                        <td align="right" style="font-size: 13px; font-weight: 600; color: #111827;">${ new Date().toDateString()} </td>
                       </tr>
                     </table>
                   </td>
