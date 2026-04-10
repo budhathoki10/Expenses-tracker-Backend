@@ -30,6 +30,7 @@ const ExpensesData = async (req, res) => {
         message: "Insufficient balance in the wallet",
       });
     }
+
     const newData = new ExpensesModel({
       userID: req.user._id,
       type: type,
@@ -53,12 +54,11 @@ const ExpensesData = async (req, res) => {
       "userName email",
     );
     try {
-    if(type === "Expense"){
+      if (type === "Expense") {
         await emailHandler.ExpenseEmail(populatedData, findWallet);
-    }
-    else if(type === "Income"){
-        await emailHandler.IncomeEmail(populatedData, findWallet);  
-    }
+      } else if (type === "Income") {
+        await emailHandler.IncomeEmail(populatedData, findWallet);
+      }
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
     }
