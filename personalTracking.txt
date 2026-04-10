@@ -120,3 +120,4 @@ const result = await ExpensesModel.aggregate([
 
 day 11
 - filter expenses
+- save goal functions
