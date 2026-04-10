@@ -11,17 +11,15 @@ const verifyOTP = require("./routes/verifyOTP.route");
 const login = require("./routes/login.routes");
 const loginWithGoogle = require("./routes/LoginWithGoogle.routes");
 const LogoutRouters = require("./routes/Logout.routes");
-const configureGoogleAuth = require("./LoginWithGoogle/google.loginWithGoogle"); 
+const configureGoogleAuth = require("./LoginWithGoogle/google.loginWithGoogle");
 const viewWallet = require("./routes/viewWallet.route");
-const viewExpenses = require("./routes/viewExpenses.route")
-const expensesMoney = require("./routes/expenses.route")
-const deleteExpenseRoute= require("./routes/deleteexpense.route")
-const updateExpenseRoute= require("./routes/updateexpense.route")
-const sendMessage= require("./routes/sendMessage.route");
+const viewExpenses = require("./routes/viewExpenses.route");
+const expensesMoney = require("./routes/expenses.route");
+const deleteExpenseRoute = require("./routes/deleteexpense.route");
+const updateExpenseRoute = require("./routes/updateexpense.route");
+const sendMessage = require("./routes/sendMessage.route");
 const filterRoute = require("./routes/filter.route");
-
-
-
+const goalRoutes = require("./routes/goal.routes");
 
 const app = express();
 app.use(express.json());
@@ -34,20 +32,20 @@ mongoose
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "secret", 
+    secret: process.env.SESSION_SECRET || "secret",
     resave: false,
-    saveUninitialized: false,                       
-  })
+    saveUninitialized: false,
+  }),
 );
 // app.use(cors())
-const allowedOrigins = [
-  "http://localhost:5173",
-];
+const allowedOrigins = ["http://localhost:5173"];
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -65,8 +63,7 @@ app.use("/api", updateExpenseRoute);
 app.use("/api", sendMessage);
 app.use("/api", viewExpenses);
 app.use("/api", filterRoute);
-
-
+app.use("/api", goalRoutes);
 
 app.listen(5000, () => {
   console.log("Server running at http://localhost:5000");
