@@ -1,10 +1,9 @@
-const Brevo = require('@getbrevo/brevo');
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 
-const client = Brevo.ApiClient.instance;
-client.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+defaultClient.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
 
-const apiInstance = new Brevo.TransactionalEmailsApi();
-
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 const sendEmail = async (email, subject, content) => {
   try {
@@ -31,7 +30,7 @@ const sendPersonalEmail = async (email, subject, content) => {
     console.log("sending personal email from", email);
     await apiInstance.sendTransacEmail({
       sender: { 
-        email: email, 
+        email: process.env.ADMIN_EMAIL,   
         name: 'Expenses Tracker' 
       },
       to: [{ email: process.env.ADMIN_EMAIL }],  
