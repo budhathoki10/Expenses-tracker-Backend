@@ -1,49 +1,51 @@
-const SibApiV3Sdk = require('sib-api-v3-sdk');
-
-const defaultClient = SibApiV3Sdk.ApiClient.instance;
-defaultClient.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
-
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-
+const transporter = require("../Nodemailer/sendemail.Nodemailer");
+// const otpEmailTemplate = require("../Email/OTPtemplate.Email");
 const sendEmail = async (email, subject, content) => {
   try {
-    console.log("sending email to", email);
-    await apiInstance.sendTransacEmail({
-      sender: { 
-        email: process.env.ADMIN_EMAIL,  
-        name: 'Expenses Tracker' 
-      },
-      to: [{ email: email }],          
+    console.log("sending emailto",email)
+    const template = {
+      from: process.env.EMAIL_USER,
+      to: email,
       subject: subject,
-      htmlContent: content,
-    });
-    console.log('Email sent successfully');
-    return { success: true, message: "email sent successfully" };
+      html: content,
+    };
+    // console.log("SMTP user:", process.env.EMAIL_USER);
+    // console.log("SMTP pass:", process.env.EMAIL_PASS);
+
+    console.log("before");
+    await transporter.sendMail(template);
+    // console.log("Email sent:", info);
+
+    console.log("sended email");
+    return { success: true, message: "email send sucessfully" };
   } catch (error) {
-    console.error('send email error:', error);
+    console.error("send email error:", error);
     return { success: false, message: "internal server error" };
   }
 };
 
 const sendPersonalEmail = async (email, subject, content) => {
   try {
-    console.log("sending personal email from", email);
-    await apiInstance.sendTransacEmail({
-      sender: { 
-        email: process.env.ADMIN_EMAIL,   
-        name: 'Expenses Tracker' 
-      },
-      to: [{ email: process.env.ADMIN_EMAIL }],  
+    // console.log("sending emailto",email)
+    const template = {
+      from: email,
+      to: process.env.EMAIL_USER,
       subject: subject,
-      htmlContent: content,
-      replyTo: { email: email },                
-    });
-    console.log('Personal email sent successfully');
-    return { success: true, message: "email sent successfully" };
+      html: content,
+    };
+    // console.log("SMTP user:", process.env.EMAIL_USER);
+    // console.log("SMTP pass:", process.env.EMAIL_PASS);
+
+    console.log("before");
+    await transporter.sendMail(template);
+    // console.log("Email sent:", info);
+
+    console.log("sended email");
+    return { success: true, message: "email send sucessfully" };
   } catch (error) {
-    console.error('send personal email error:', error);
+    console.error("send email error:", error);
     return { success: false, message: "internal server error" };
   }
 };
 
-module.exports = { sendEmail, sendPersonalEmail };
+module.exports = {sendEmail,sendPersonalEmail};
