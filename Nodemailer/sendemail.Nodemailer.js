@@ -5,12 +5,13 @@ console.log("EMAIL_USER from transporter:", process.env.EMAIL_USER);
 console.log("EMAIL_PASS from transporter:", process.env.EMAIL_USER);
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.gmail.com",  // use explicit host instead of 'service: gmail'
   port: 587,
+  family: 4,               // 👈 force IPv4
   secure: false,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    pass: process.env.EMAIL_PASS,
   },
 });
 // make sure it looks exactly like this
