@@ -76,7 +76,7 @@ const sendEmail = async (email, subject, content) => {
   try {
     console.log("sending email to", email);
     const data = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'budhathokikushal170@gmail.com',
       to: email,
       subject: subject,
       html: content,
