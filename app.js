@@ -66,6 +66,6 @@ app.use("/api", filterRoute);
 app.use("/api", goalRoutes);
 app.use("/api", filterExpensesRoute);
 
-app.listen(5000, () => {
+app.listen(5000,'0.0.0.0', () => {
   console.log("Server running at http://localhost:5000");
 });
