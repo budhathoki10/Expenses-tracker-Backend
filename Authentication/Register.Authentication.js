@@ -38,6 +38,7 @@ const register = async (req, res) => {
     // console.log("registered user is",user.userName)
     // console.log("registered user is",user.OTP)
   //  await  sendEmail(user.email,user)
+  console.log("before send otp  to user")
   await emailHandler.sendOTP(user);
 
     return res.status(200).json({ message: "User registered Sucessfully" });
