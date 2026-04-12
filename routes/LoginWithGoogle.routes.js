@@ -44,6 +44,8 @@ router.get(
           token: token,
         });
 
+          return res.redirect("http://localhost:5173/dashboard");
+
     } catch (error) {
       res.status(500).json({ message: "Internal server error in google" });
     }
