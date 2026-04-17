@@ -1,6 +1,9 @@
+// importing the ExpenseModel
 const ExpensesModel = require("../Models/expenses.models");
 
+// return the data of expense according to weekly,monthy and yearly
 const filterAggregation = async (req, res) => {
+  // query parameter like weekly,monthly,yearly
   const { filter } = req.query;
   try {
     const now = new Date();
@@ -13,6 +16,7 @@ const filterAggregation = async (req, res) => {
       });
     }
 
+    //  checking what if the query params is weekly, monthly, yearly
     if (filter === "weekly") {
       const currentDay = now.getUTCDay();
 
@@ -115,6 +119,7 @@ const filterAggregation = async (req, res) => {
 
     //  ])
 
+    // returns the Aggragation of sum of total expense according to the expense or income wise
     const AggregationResult = await ExpensesModel.aggregate([
       {
         $match: {
@@ -125,8 +130,10 @@ const filterAggregation = async (req, res) => {
       },
 
       {
+        // groupping the data according to the category wise
         $group: {
           _id: "$category",
+          // summing all the money
           total: { $sum: "$amount" },
         },
       },
@@ -137,7 +144,7 @@ const filterAggregation = async (req, res) => {
       0,
     );
 
-
+// displaying proper message
     return res.status(200).json({
       success: true,
       message: "Data fetched successfully",
