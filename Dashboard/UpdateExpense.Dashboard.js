@@ -3,6 +3,7 @@ const walletModel = require("../Models/wallet.model");
 
 const updateExpense = async (req, res) => {
   try {
+    
     const { id } = req.params;
     const { type, amount, category, account, description, date } = req.body;
 

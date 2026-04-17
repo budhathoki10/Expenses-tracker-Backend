@@ -1,3 +1,4 @@
+// importing all the library files
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -25,6 +26,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+// connect the data to mongodb
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Successfully connected to MongoDB"))
@@ -38,6 +40,7 @@ app.use(
   }),
 );
 // app.use(cors())
+// allow the cors so that frontend can integrate api
 const allowedOrigins = ["http://localhost:5173"];
 
 app.use(
@@ -51,6 +54,7 @@ app.use(passport.session());
 
 configureGoogleAuth();
 
+// using all the route with prefix api
 app.use("/api", register);
 app.use("/api", verifyOTP);
 app.use("/api", login);
@@ -66,6 +70,7 @@ app.use("/api", filterRoute);
 app.use("/api", goalRoutes);
 app.use("/api", filterExpensesRoute);
 
-app.listen(process.env.PORT,'0.0.0.0', () => {
+// listening all the request on port number 5000
+app.listen(process.env.PORT, () => {
   console.log("Server running at http://localhost:5000");
 });
