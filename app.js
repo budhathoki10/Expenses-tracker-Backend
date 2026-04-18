@@ -22,6 +22,7 @@ const sendMessage = require("./routes/sendMessage.route");
 const filterRoute = require("./routes/filter.route");
 const goalRoutes = require("./routes/goal.routes");
 const filterExpensesRoute = require("./routes/filterExpenses.route");
+const downlaod = require("./routes/downloadReport.route");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -41,7 +42,7 @@ app.use(
 );
 // app.use(cors())
 // allow the cors so that frontend can integrate api
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173/"];
 
 app.use(
   cors({
@@ -69,6 +70,7 @@ app.use("/api", viewExpenses);
 app.use("/api", filterRoute);
 app.use("/api", goalRoutes);
 app.use("/api", filterExpensesRoute);
+app.use("/api", downlaod);
 
 // listening all the request on port number 5000
 app.listen(process.env.PORT, () => {
