@@ -69,7 +69,7 @@ const ExpensesData = async (req, res) => {
       console.error("Email sending failed:", emailError);
     }
 
-    console.log("testing12");
+    // console.log("testing12");
     return res.status(200).json({
       success: true,
       message: "Expense added Successfully",

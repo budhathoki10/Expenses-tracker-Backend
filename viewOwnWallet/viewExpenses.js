@@ -14,8 +14,8 @@ try {
         });
       }
     //   console.log(req.user.email);
-          console.log("Expenses founds:", data.length);
-          console.log(req.user._id);
+          // console.log("Expenses founds:", data.length);
+          // console.log(req.user._id);
       return res.status(200).json({
         success: true,
         message: "User expenses details",

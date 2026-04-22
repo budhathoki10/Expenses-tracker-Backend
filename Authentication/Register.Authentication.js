@@ -5,7 +5,7 @@ const app = express.Router();
 const bcrypt = require("bcryptjs");
 const validate = require("../Validation/register.validation");
 const z = require("zod");
-const generateOTP = require("../OTP/verifyOTP/generateOTP");
+const generateOTP = require("../OTP/generateOTP");
 const emailHandler = require("../EmailWiring/email.wiring");
 
 // register the user data in mongodb

@@ -143,6 +143,9 @@ const filterAggregation = async (req, res) => {
       (acc, item) => acc + item.total,
       0,
     );
+    const highestExpense= AggregationResult.length>0?AggregationResult[0]:null
+    const LowestExpense= AggregationResult.length>0?AggregationResult[AggregationResult.length-1]:null
+// console.log("Lowest espennse is",LowestExpense)
 
 // displaying proper message
     return res.status(200).json({
@@ -150,7 +153,11 @@ const filterAggregation = async (req, res) => {
       message: "Data fetched successfully",
       Data: AggregationResult,
       totalExpense: totalExpense,
+      LowestExpense:LowestExpense,
+      highestExpense:highestExpense,
     });
+
+
   } catch (error) {
     return res.status(500).json({
       success: false,

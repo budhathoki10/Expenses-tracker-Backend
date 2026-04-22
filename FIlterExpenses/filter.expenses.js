@@ -23,7 +23,7 @@ try {
 }
 // sum all the total expenses of that particular data
 const totalExpenses= FindData.reduce((a,e)=>a+e.amount,0)
-console.log(totalExpenses)
+// console.log(totalExpenses)
 // show the message of the expenses data
       return res.status(200).json({
       success: true,
