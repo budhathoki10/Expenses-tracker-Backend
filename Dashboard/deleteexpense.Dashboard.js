@@ -7,7 +7,7 @@ const deleteExpense = async (req, res) => {
         const { id } = req.params;
         // check user id 
         const checkID= await ExpensesModel.findById(id);
-        console.log("hello")
+        // console.log("hello")
         if(!checkID){
             return res.status(404).json({ message: "Expense not found" });
         }

@@ -11,7 +11,7 @@ const configureGoogleAuth = (req, res) => {
         callbackURL: process.env.GOOGLE_CALLBACK_URL,
       },
       async (accessToken, refreshToken, profile, done) => {
-        console.log("profile is", profile);
+        // console.log("profile is", profile);
 
         try {
           const email = profile.emails[0].value;

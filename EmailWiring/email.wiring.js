@@ -5,6 +5,7 @@ const incomeEmailTemplate = require("../Email/IncomeTemplate");
 // const sendPersonalEmail= require("../utils/nodemailer.utils");
 const { sendEmail, sendPersonalEmail } = require("../utils/nodemailer.utils");
 const adminContactNotificationTemplate = require("../Email/adminContactNotificationTemplate.email");
+const ForgetPasswordOtpEmailTemplate = require("../Email/ForgetPassword.Email");
 
 const emailHandler = {
   sendOTP: async (user) => {
@@ -23,5 +24,9 @@ const emailHandler = {
     const content = adminContactNotificationTemplate(userName, email, message);
     await sendPersonalEmail(email, "Message from User", content);
   },
+  ForgetPassword:async(user,otp)=>{
+        const content = ForgetPasswordOtpEmailTemplate(user,otp);
+    await sendEmail(user.email, "Forget Password OTP", content);
+  }
 };
 module.exports = emailHandler;

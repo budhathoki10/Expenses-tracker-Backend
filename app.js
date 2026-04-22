@@ -23,7 +23,9 @@ const filterRoute = require("./routes/filter.route");
 const goalRoutes = require("./routes/goal.routes");
 const filterExpensesRoute = require("./routes/filterExpenses.route");
 const downlaod = require("./routes/downloadReport.route");
+const forgetpassword= require("./routes/ForgetPassword.routes")
 const app = express();
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -71,6 +73,8 @@ app.use("/api", filterRoute);
 app.use("/api", goalRoutes);
 app.use("/api", filterExpensesRoute);
 app.use("/api", downlaod);
+app.use("/api", forgetpassword);
+
 
 // listening all the request on port number 5000
 app.listen(process.env.PORT, () => {

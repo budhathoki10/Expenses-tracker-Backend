@@ -1,6 +1,5 @@
 const express = require("express");
 const passport = require("passport");
-const createPassword = require("../LoginWithGoogle/loginWithGoogle.password");
 const Authentication = require("../Middleware/auth.middleware");
 const jwt= require("jsonwebtoken")
 const router = express.Router();
@@ -52,5 +51,4 @@ router.get(
   }
 );
 
-router.post("/loginwithgoogle/createPassword",createPassword)
 module.exports = router;    

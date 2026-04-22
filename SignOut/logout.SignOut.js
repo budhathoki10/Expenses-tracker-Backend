@@ -16,7 +16,7 @@ try {
    
         
 } catch (error) {
-    console.log("error faced:", error)
+    // console.log("error faced:", error)
          return res.status(500).json({
             success:false,
             message:"internal server error in logout"
