@@ -150,7 +150,7 @@ const filterAggregation = async (req, res) => {
 // displaying proper message
     return res.status(200).json({
       success: true,
-      message: "Data fetched successfully",
+      message: "Data fetched successfullysss",
       Data: AggregationResult,
       totalExpense: totalExpense,
       LowestExpense:LowestExpense,
