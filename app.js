@@ -25,6 +25,7 @@ const filterExpensesRoute = require("./routes/filterExpenses.route");
 const downlaod = require("./routes/downloadReport.route");
 const forgetpassword= require("./routes/ForgetPassword.routes")
 const DashboardAIRoute= require("./routes/DashbaordAI.route")
+const SummaryDataRoute= require("./routes/SummaryData.route")
 
 const app = express();
 
@@ -77,7 +78,7 @@ app.use("/api", filterExpensesRoute);
 app.use("/api", downlaod);
 app.use("/api", forgetpassword);
 app.use("/api", DashboardAIRoute);
-
+app.use("/api", SummaryDataRoute);
 // listening all the request on port number 5000
 app.listen(process.env.PORT, () => {
   console.log("Server running at http://localhost:5000");
