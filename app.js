@@ -79,7 +79,8 @@ app.use("/api", downlaod);
 app.use("/api", forgetpassword);
 app.use("/api", DashboardAIRoute);
 app.use("/api", SummaryDataRoute);
-// listening all the request on port number 5000
-app.listen(process.env.PORT, () => {
-  console.log("Server running at http://localhost:5000");
+// listening all the request on specified port or fallback to 5000
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });

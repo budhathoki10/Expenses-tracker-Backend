@@ -76,9 +76,11 @@ const ExpensesData = async (req, res) => {
       data: populatedData,
     });
   } catch (error) {
+    // log the error for debugging
+    console.error("ExpensesData error:", error && (error.stack || error.message || error));
     if (error instanceof z.ZodError) {
-      return res.status(500).json({
-        status: "internal server error in zod validation",
+      return res.status(400).json({
+        status: "validation_error",
         errors: error.issues.map((err) => ({
           field: err.path[0],
           message: err.message,
@@ -86,9 +88,11 @@ const ExpensesData = async (req, res) => {
       });
     }
 
+    // return a more descriptive error for easier debugging in dev
     return res.status(500).json({
       sucess: false,
-      message: "internal server errors",
+      message: "internal server error",
+      error: error?.message || String(error),
     });
   }
 };

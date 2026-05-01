@@ -38,6 +38,7 @@ const Login = async (req, res) => {
       {
         id: findEmail._id,
         email: findEmail.email,
+        username: findEmail.userName,
       },
       process.env.ACCESS_TOKEN_SECERET_KEY,
       {

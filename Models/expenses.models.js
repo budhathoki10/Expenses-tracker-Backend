@@ -6,7 +6,7 @@ const TransactionsSchema = mongoose.Schema({
   },
   type: {
     type: String,
-  enum: ["Expense", "Income"],   // 'income' | 'expense' | 'transfer'
+ enum: ["Expense", "Income"],   // 'income' | 'expense' | 'transfer'
   },
   amount: {
     type: Number,
@@ -18,7 +18,7 @@ const TransactionsSchema = mongoose.Schema({
   },
   account: {
     type: String,
-    enum: ["Cash", "Bank"],
+     enum: ["Cash", "Bank"],
   },
   description: {
     type: String,

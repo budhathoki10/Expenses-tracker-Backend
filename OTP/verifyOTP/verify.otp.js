@@ -41,6 +41,7 @@ try {
             {
               id: findUser._id,
               email: findUser.email,
+              username: findUser.userName,
             },
             process.env.ACCESS_TOKEN_SECERET_KEY,
             {
