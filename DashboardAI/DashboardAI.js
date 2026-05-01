@@ -171,7 +171,12 @@ Write ONLY in plain paragraph text. Strict rules:
 - dont write in a same line use paragraph breaks to make it more readable
 - Start directly with the analysis, no greetings or titles
 
--  provide the answer in short and sweet manner, not more than 3-4 paragraphs. Be concise and to the point.
+Example of correct format:
+"Kushal, your spending this month shows that education is your biggest expense at Rs 101.<br>
+This is generally a good investment but without any income coming in, every rupee spent<br>
+puts pressure on your savings..."
+
+
 `;
     
 

@@ -5,7 +5,7 @@ const AIModel = async (Prompt) => {
     const ai = new GoogleGenerativeAI(process.env.GOOGLE_API);
 
     const model = ai.getGenerativeModel({
-      model: "gemini-3.1-flash-lite-preview",
+      model: "gemini-2.5-flash",
     });
 
     const result = await model.generateContent({
