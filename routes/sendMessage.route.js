@@ -5,6 +5,6 @@ const express= require("express")
 const Router= express.Router();
 // create a post route for send messge
 
-Router.post("/sendMessage",Authentication,sendPersonalMessage)
+Router.post("/sendMessage",sendPersonalMessage)
 
 module.exports= Router
