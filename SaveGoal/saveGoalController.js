@@ -356,6 +356,7 @@ const editGoal = async (req, res) => {
     const { goalName, targetAmount, priority } = req.body;
 
     // validate only the fields that were sent
+    // Target Amount, priority, and deadline are optional to update, but if they are provided they must be valid
     if (targetAmount !== undefined) {
       if (isNaN(targetAmount) || Number(targetAmount) <= 0) {
         return res.status(400).json({
