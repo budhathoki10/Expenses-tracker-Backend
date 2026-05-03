@@ -25,21 +25,6 @@ const PRIORITY_ORDER = { high: 1, medium: 2, low: 3 };
 
 // =============================================================
 // FUNCTION 1: saveGoal
-<<<<<<< HEAD
-
-// This function creates a new financial goal for the user.
-// The user sends goalName, targetAmount, , priority,
-// and deadline in the request body.
-// We validate all fields before saving to the database.
-
-const saveGoal = async (req, res) => {
-  try {
-    // pulling out the fields from the request body
-    const { goalName, targetAmount, priority, deadline } = req.body;
-
-    // check if all required fields are present
-    // if any of them are missing we send back a 400 Bad Request error
-=======
 // -------------------------------------------------------------
 // Creates a new financial goal for the logged-in user.
 // Required fields: goalName, targetAmount, priority, deadline
@@ -54,7 +39,6 @@ const saveGoal = async (req, res) => {
     const { goalName, targetAmount, priority, deadline } = req.body;
 
     // check all required fields are present
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
     if (!goalName || !targetAmount || !priority || !deadline) {
       return res.status(400).json({
         success: false,
@@ -71,10 +55,6 @@ const saveGoal = async (req, res) => {
       });
     }
 
-<<<<<<< HEAD
- 
-=======
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
     // priority must be one of these 3 values only
     const validPriorities = ["low", "medium", "high"];
     if (!validPriorities.includes(priority)) {
@@ -105,10 +85,6 @@ const saveGoal = async (req, res) => {
       userId: req.user._id,
       goalName: goalName.trim(),
       targetAmount: Number(targetAmount),
-<<<<<<< HEAD
-     
-=======
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
       priority,
       deadline: parsedDeadline,
     });
@@ -122,16 +98,9 @@ const saveGoal = async (req, res) => {
         id: newGoal._id,
         goalName: newGoal.goalName,
         targetAmount: newGoal.targetAmount,
-<<<<<<< HEAD
-        savedAmount: newGoal.savedAmount, // will be 0 at creation
-        remainingAmount: newGoal.targetAmount, // full amount remaining at start
-        progressPercentage: "0.00%", // 0% progress at creation
-      
-=======
         savedAmount: newGoal.savedAmount,
         remainingAmount: newGoal.targetAmount,
         progressPercentage: "0.00%",
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
         priority: newGoal.priority,
         deadline: newGoal.deadline,
         createdAt: newGoal.createdAt,
@@ -190,12 +159,7 @@ const getGoals = async (req, res) => {
         targetAmount: goal.targetAmount,
         savedAmount: goal.savedAmount,
         remainingAmount,
-<<<<<<< HEAD
-        progressPercentage: `${progressPercentage}%`, // e.g. "66.67%"
-     
-=======
         progressPercentage: `${progressPercentage}%`,
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
         priority: goal.priority,
         deadline: goal.deadline,
         createdAt: goal.createdAt,
@@ -388,12 +352,8 @@ const editGoal = async (req, res) => {
       });
     }
 
-<<<<<<< HEAD
     // pull out the fields the user wants to update from the request body
     // any of these can be undefined if user didn't include them
-=======
-    // pull out editable fields (timeframe removed)
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
     const { goalName, targetAmount, priority, deadline } = req.body;
 
     // validate only the fields that were sent
@@ -406,12 +366,6 @@ const editGoal = async (req, res) => {
       }
     }
 
-<<<<<<< HEAD
-   
-
-    // validate priority only if it was sent
-=======
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
     if (priority !== undefined) {
       const validPriorities = ["low", "medium", "high"];
       if (!validPriorities.includes(priority)) {
@@ -442,10 +396,6 @@ const editGoal = async (req, res) => {
     const updates = {};
     if (goalName !== undefined) updates.goalName = goalName.trim();
     if (targetAmount !== undefined) updates.targetAmount = Number(targetAmount);
-<<<<<<< HEAD
-
-=======
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
     if (priority !== undefined) updates.priority = priority;
     if (deadline !== undefined) updates.deadline = new Date(deadline);
 
@@ -482,10 +432,6 @@ const editGoal = async (req, res) => {
         savedAmount: updatedGoal.savedAmount,
         remainingAmount,
         progressPercentage: `${progressPercentage}%`,
-<<<<<<< HEAD
-     
-=======
->>>>>>> a626c582133e82873868a2176904eb8b36c9d843
         priority: updatedGoal.priority,
         deadline: updatedGoal.deadline,
         updatedAt: updatedGoal.updatedAt,
