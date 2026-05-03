@@ -21,22 +21,22 @@ const Transaction = require("../Models/expenses.models");
 // FUNCTION 1: saveGoal
 
 // This function creates a new financial goal for the user.
-// The user sends goalName, targetAmount, timeframe, priority,
+// The user sends goalName, targetAmount, , priority,
 // and deadline in the request body.
 // We validate all fields before saving to the database.
 
 const saveGoal = async (req, res) => {
   try {
     // pulling out the fields from the request body
-    const { goalName, targetAmount, timeframe, priority, deadline } = req.body;
+    const { goalName, targetAmount, priority, deadline } = req.body;
 
     // check if all required fields are present
     // if any of them are missing we send back a 400 Bad Request error
-    if (!goalName || !targetAmount || !timeframe || !priority || !deadline) {
+    if (!goalName || !targetAmount || !priority || !deadline) {
       return res.status(400).json({
         success: false,
         message:
-          "goalName, targetAmount, timeframe, priority, and deadline are all required.",
+          "goalName, targetAmount, priority, and deadline are all required.",
       });
     }
 
@@ -49,16 +49,7 @@ const saveGoal = async (req, res) => {
       });
     }
 
-    // timeframe must be one of these 3 values only
-    // this matches the enum we defined in the Goal model
-    const validTimeframes = ["weekly", "monthly", "yearly"];
-    if (!validTimeframes.includes(timeframe)) {
-      return res.status(400).json({
-        success: false,
-        message: "timeframe must be one of: weekly, monthly, yearly.",
-      });
-    }
-
+ 
     // priority must be one of these 3 values only
     // low = not urgent, medium = somewhat urgent, high = very urgent
     const validPriorities = ["low", "medium", "high"];
@@ -93,7 +84,7 @@ const saveGoal = async (req, res) => {
       userId: req.user._id,
       goalName: goalName.trim(), // trim() removes any extra spaces
       targetAmount: Number(targetAmount),
-      timeframe,
+     
       priority,
       deadline: parsedDeadline,
     });
@@ -113,7 +104,7 @@ const saveGoal = async (req, res) => {
         savedAmount: newGoal.savedAmount, // will be 0 at creation
         remainingAmount: newGoal.targetAmount, // full amount remaining at start
         progressPercentage: "0.00%", // 0% progress at creation
-        timeframe: newGoal.timeframe,
+      
         priority: newGoal.priority,
         deadline: newGoal.deadline,
         createdAt: newGoal.createdAt,
@@ -176,7 +167,7 @@ const getGoals = async (req, res) => {
         savedAmount: goal.savedAmount,
         remainingAmount,
         progressPercentage: `${progressPercentage}%`, // e.g. "66.67%"
-        timeframe: goal.timeframe,
+     
         priority: goal.priority,
         deadline: goal.deadline,
         createdAt: goal.createdAt,
@@ -389,7 +380,7 @@ const editGoal = async (req, res) => {
 
     // pull out the fields the user wants to update from the request body
     // any of these can be undefined if user didn't include them
-    const { goalName, targetAmount, timeframe, priority, deadline } = req.body;
+    const { goalName, targetAmount, priority, deadline } = req.body;
 
     // only validate fields that were actually sent
     // we use "!== undefined" to check if the field exists in the request
@@ -404,16 +395,7 @@ const editGoal = async (req, res) => {
       }
     }
 
-    // validate timeframe only if it was sent
-    if (timeframe !== undefined) {
-      const validTimeframes = ["weekly", "monthly", "yearly"];
-      if (!validTimeframes.includes(timeframe)) {
-        return res.status(400).json({
-          success: false,
-          message: "timeframe must be one of: weekly, monthly, yearly.",
-        });
-      }
-    }
+   
 
     // validate priority only if it was sent
     if (priority !== undefined) {
@@ -448,7 +430,7 @@ const editGoal = async (req, res) => {
     const updates = {};
     if (goalName !== undefined) updates.goalName = goalName.trim();
     if (targetAmount !== undefined) updates.targetAmount = Number(targetAmount);
-    if (timeframe !== undefined) updates.timeframe = timeframe;
+
     if (priority !== undefined) updates.priority = priority;
     if (deadline !== undefined) updates.deadline = new Date(deadline);
 
@@ -490,7 +472,7 @@ const editGoal = async (req, res) => {
         savedAmount: updatedGoal.savedAmount,
         remainingAmount,
         progressPercentage: `${progressPercentage}%`,
-        timeframe: updatedGoal.timeframe,
+     
         priority: updatedGoal.priority,
         deadline: updatedGoal.deadline,
         updatedAt: updatedGoal.updatedAt,
