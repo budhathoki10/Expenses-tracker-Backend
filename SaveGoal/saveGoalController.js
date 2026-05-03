@@ -469,7 +469,7 @@ const deleteGoal = async (req, res) => {
       if (!wallet) {
         return res.status(404).json({
           success: false,
-          message: "Wallet not found. Cannot refund saved amount.",
+          message: "Wallet not found. Could not refund saved amount.",
         });
       }
 
