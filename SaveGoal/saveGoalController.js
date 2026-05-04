@@ -248,7 +248,7 @@ const addSaving = async (req, res) => {
     if (wallet.balance < Number(amount)) {
       return res.status(400).json({
         success: false,
-        message: `Insufficient balance. Your wallet has Rs.${wallet.balance} but you tried to deposit Rs.${amount}.`,
+        message: `Insufficient balance. Your wallet has Rs. ${wallet.balance} but you tried to deposit amount Rs. ${amount}.`,
       });
     }
 
@@ -286,8 +286,8 @@ const addSaving = async (req, res) => {
     res.status(200).json({
       success: true,
       message: isCompleted
-        ? `🎉 Congratulations! You completed your goal: "${goal.goalName}"!`
-        : `✅ Rs.${amount} added to "${goal.goalName}". Rs.${remainingAmount} remaining.`,
+        ? ` Congratulations! You completed your goal: "${goal.goalName}"!`
+        : ` Rs. ${amount} added to "${goal.goalName}". Rs. ${remainingAmount} remaining.`,
       data: {
         goal: {
           id: goal._id,
@@ -352,9 +352,8 @@ const editGoal = async (req, res) => {
       });
     }
 
-    // pull out the fields the user wants to update from the request body
-    // any of these can be undefined if user didn't include them
-    const { goalName, targetAmount, priority, deadline } = req.body;
+    // pull out editable fields (timeframe, deadline removed)
+    const { goalName, targetAmount, priority } = req.body;
 
     // validate only the fields that were sent
     if (targetAmount !== undefined) {
@@ -376,28 +375,11 @@ const editGoal = async (req, res) => {
       }
     }
 
-    if (deadline !== undefined) {
-      const parsedDeadline = new Date(deadline);
-      if (isNaN(parsedDeadline.getTime())) {
-        return res.status(400).json({
-          success: false,
-          message: "deadline must be a valid date (e.g. 2025-12-31).",
-        });
-      }
-      if (parsedDeadline <= new Date()) {
-        return res.status(400).json({
-          success: false,
-          message: "deadline must be a future date.",
-        });
-      }
-    }
-
     // build update object with only the fields that were provided
     const updates = {};
     if (goalName !== undefined) updates.goalName = goalName.trim();
     if (targetAmount !== undefined) updates.targetAmount = Number(targetAmount);
     if (priority !== undefined) updates.priority = priority;
-    if (deadline !== undefined) updates.deadline = new Date(deadline);
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({
@@ -487,7 +469,7 @@ const deleteGoal = async (req, res) => {
       if (!wallet) {
         return res.status(404).json({
           success: false,
-          message: "Wallet not found. Cannot refund saved amount.",
+          message: "Wallet not found. Could not refund saved amount.",
         });
       }
 
@@ -512,7 +494,7 @@ const deleteGoal = async (req, res) => {
 
     const message =
       refundAmount > 0
-        ? `Goal "${goalName}" deleted. Rs.${refundAmount} has been refunded back to your wallet.`
+        ? `Goal "${goalName}" deleted. Rs. ${refundAmount} has been refunded back to your wallet.`
         : `Goal "${goalName}" deleted successfully. No savings to refund.`;
 
     res.status(200).json({
