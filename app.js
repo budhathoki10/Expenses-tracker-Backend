@@ -27,6 +27,7 @@ const forgetpassword= require("./routes/ForgetPassword.routes")
 const DashboardAIRoute= require("./routes/DashbaordAI.route")
 const SummaryDataRoute= require("./routes/SummaryData.route")
 const monthlySummaryRoute = require("./routes/monthlySummary.route");
+const voiceCommandRoute = require("./routes/voiceCommand.route");
 
 const app = express();
 
@@ -81,6 +82,7 @@ app.use("/api", forgetpassword);
 app.use("/api", DashboardAIRoute);
 app.use("/api", SummaryDataRoute);
 app.use("/api", monthlySummaryRoute);
+app.use("/api", voiceCommandRoute);
 // listening all the request on specified port or fallback to 5000
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
