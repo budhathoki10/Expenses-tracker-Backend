@@ -123,8 +123,7 @@ ${topCategoriesText}
 Analyze this user's spending pattern and provide:
 
 if a user ask about his wallet like what are his expenses and how much money he has in his wallet then you can provide the data of his wallet and expenses but if he ask about how to save money or how to reduce his expenses then you can provide him with the suggestions to save money and reduce his expenses.
-provide in 3-3 line paragraph form and not in a list form
-1. **Overall Financial Health Assessment)
+use all this and combine and provide a answer in a short and sweet way. 
    - Is their spending reasonable or excessive?
    - Are they overspending in any area?
 
@@ -183,10 +182,10 @@ Write ONLY in plain paragraph text. Strict rules:
     
 
     
-const result= await AIModel(prompt,res);
+const result= await AIModel(prompt);
 
 
-res.status(200).json({
+res.status(200).pipe({
     success:true,
     message:"AI analysis generated successfully",
     data:result
