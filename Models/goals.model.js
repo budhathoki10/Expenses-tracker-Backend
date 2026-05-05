@@ -20,11 +20,6 @@ const goalSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    timeframe: {
-      type: String,
-      enum: ["weekly", "monthly", "yearly"],
-      required: true,
-    },
     priority: {
       type: String,
       enum: ["low", "medium", "high"],

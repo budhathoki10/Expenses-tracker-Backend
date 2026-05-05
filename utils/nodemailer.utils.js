@@ -12,7 +12,7 @@ const sendEmail = async (email, subject, content) => {
     // console.log("SMTP user:", process.env.EMAIL_USER);
     // console.log("SMTP pass:", process.env.EMAIL_PASS);
 
-    console.log("before");
+    // console.log("before");
     await transporter.sendMail(template);
     // console.log("Email sent:", info);
 
@@ -36,7 +36,7 @@ const sendPersonalEmail = async (email, subject, content) => {
     // console.log("SMTP user:", process.env.EMAIL_USER);
     // console.log("SMTP pass:", process.env.EMAIL_PASS);
 
-    console.log("before");
+    // console.log("before");
     await transporter.sendMail(template);
     // console.log("Email sent:", info);
 

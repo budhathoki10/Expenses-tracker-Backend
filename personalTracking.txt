@@ -124,3 +124,10 @@ day 11
 
 
 
+=======
+- save goal functions
+
+-----------------------------------------------------------------------------------------------
+sprint 2
+day 1: forget password completed
+>>>>>>> 233a7ca8cdfc1bb65b3a7c8bc22ff39629e655ed

@@ -4,7 +4,7 @@ const emailHandler = require("../../EmailWiring/email.wiring");
 const verifyOTP = async (req, res) => {
 try {
       const { email, otp } = req.body
-      console.log("hello")
+      // console.log("hello")
       const findUser = await userModel.findOne({ email: email });
       if (!findUser) {
         return res.status(400).json({
@@ -41,6 +41,7 @@ try {
             {
               id: findUser._id,
               email: findUser.email,
+              username: findUser.userName,
             },
             process.env.ACCESS_TOKEN_SECERET_KEY,
             {

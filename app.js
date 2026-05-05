@@ -1,3 +1,4 @@
+// importing all the library files
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -21,10 +22,19 @@ const sendMessage = require("./routes/sendMessage.route");
 const filterRoute = require("./routes/filter.route");
 const goalRoutes = require("./routes/goal.routes");
 const filterExpensesRoute = require("./routes/filterExpenses.route");
+const downlaod = require("./routes/downloadReport.route");
+const forgetpassword= require("./routes/ForgetPassword.routes")
+const DashboardAIRoute= require("./routes/DashbaordAI.route")
+const SummaryDataRoute= require("./routes/SummaryData.route")
+const monthlySummaryRoute = require("./routes/monthlySummary.route");
+const voiceCommandRoute = require("./routes/voiceCommand.route");
+
 const app = express();
+
 app.use(express.json());
 app.use(cookieParser());
 
+// connect the data to mongodb
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Successfully connected to MongoDB"))
@@ -38,6 +48,7 @@ app.use(
   }),
 );
 // app.use(cors())
+// allow the cors so that frontend can integrate api
 const allowedOrigins = ["http://localhost:5173"];
 
 app.use(
@@ -51,6 +62,7 @@ app.use(passport.session());
 
 configureGoogleAuth();
 
+// using all the route with prefix api
 app.use("/api", register);
 app.use("/api", verifyOTP);
 app.use("/api", login);
@@ -65,7 +77,14 @@ app.use("/api", viewExpenses);
 app.use("/api", filterRoute);
 app.use("/api", goalRoutes);
 app.use("/api", filterExpensesRoute);
-
-app.listen(5000, () => {
-  console.log("Server running at http://localhost:5000");
+app.use("/api", downlaod);
+app.use("/api", forgetpassword);
+app.use("/api", DashboardAIRoute);
+app.use("/api", SummaryDataRoute);
+app.use("/api", monthlySummaryRoute);
+app.use("/api", voiceCommandRoute);
+// listening all the request on specified port or fallback to 5000
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });

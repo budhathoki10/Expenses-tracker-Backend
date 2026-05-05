@@ -1,4 +1,4 @@
-const userModel = require("../../Models/user.model");
+const userModel = require("../Models/user.model");
 const generateOTP = async (email) => {
   const findUser = await userModel.findOne({ email: email });
   if (!findUser) {
@@ -9,5 +9,9 @@ const generateOTP = async (email) => {
   findUser.OTPexpiryDate = Date.now() + 60 * 60 * 1000;
 
   await findUser.save();
+  return otp;
+
 };
 module.exports = generateOTP;
+
+

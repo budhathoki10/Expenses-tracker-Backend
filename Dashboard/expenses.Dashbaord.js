@@ -1,3 +1,4 @@
+// importing all the expenses
 const ExpensesModel = require("../Models/expenses.models");
 const z = require("zod");
 const userModel = require("../Models/user.model");
@@ -6,9 +7,7 @@ const validateExpense = require("../Validation/expenses.validation");
 const emailHandler = require("../EmailWiring/email.wiring");
 const viewWallet = require("../viewOwnWallet/viewWallet.wallet");
 
-// const emailTemplate = require("../Email/ExpeseTemplate.email");
-// const sendEmail = require("../Email/sendEmail");
-
+// this function helps to add expense  and income. if user expense then money get decrease and if income then money will increase
 const ExpensesData = async (req, res) => {
   try {
     const parsedData = validateExpense.parse(req.body);
@@ -24,13 +23,15 @@ const ExpensesData = async (req, res) => {
         balance: 1000,
       });
     }
+
+    // check what user want to if expense or income
     if (type === "Expense" && findWallet.balance < amount) {
       return res.status(400).json({
         sucess: false,
         message: "Insufficient balance in the wallet",
       });
     }
-
+// make a new data for user 
     const newData = new ExpensesModel({
       userID: req.user._id,
       type: type,
@@ -39,12 +40,17 @@ const ExpensesData = async (req, res) => {
       account: account,
       description: description,
     });
+    // save the data in mongodb
+
     await newData.save();
     if (type === "Expense") {
+      // if expense withdraw money 
       findWallet.balance -= amount;
     } else if (type === "Income") {
+            // if income add money 
       findWallet.balance += amount;
     }
+    // save the final one
     await findWallet.save();
 
     // populate the userID field with user details
@@ -63,16 +69,18 @@ const ExpensesData = async (req, res) => {
       console.error("Email sending failed:", emailError);
     }
 
-    console.log("testing12");
+    // console.log("testing12");
     return res.status(200).json({
       success: true,
       message: "Expense added Successfully",
       data: populatedData,
     });
   } catch (error) {
+    // log the error for debugging
+    console.error("ExpensesData error:", error && (error.stack || error.message || error));
     if (error instanceof z.ZodError) {
-      return res.status(500).json({
-        status: "internal server error in zod validation",
+      return res.status(400).json({
+        status: "validation_error",
         errors: error.issues.map((err) => ({
           field: err.path[0],
           message: err.message,
@@ -80,9 +88,11 @@ const ExpensesData = async (req, res) => {
       });
     }
 
+    // return a more descriptive error for easier debugging in dev
     return res.status(500).json({
       sucess: false,
-      message: "internal server errors",
+      message: "internal server error",
+      error: error?.message || String(error),
     });
   }
 };

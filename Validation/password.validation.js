@@ -9,5 +9,7 @@ const validatePassword= z.object({
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
           "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
         ),
+              confirmpassword: z.string()
+
 })
 module.exports= validatePassword

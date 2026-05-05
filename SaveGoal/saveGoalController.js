@@ -1,22 +1,53 @@
+/*
+ * saveGoalController.js
+ *
+ * Handles all backend logic for the goal-based savings feature.
+ *
+ * Functions:
+ *   1. saveGoal   - creates a new goal (no timeframe, has priority)
+ *   2. getGoals   - fetches all goals sorted by priority (high → medium → low)
+ *   3. addSaving  - deposits money into a goal (checks wallet balance first)
+ *   4. editGoal   - updates an existing goal's details
+ *   5. deleteGoal - deletes a goal and refunds saved money back to wallet
+ *
+ * Models used:
+ *   - Goal        (../Models/goals.model)
+ *   - Wallet      (../Models/wallet.model)
+ *   - Transaction (../Models/expenses.models)
+ */
+
 const Goal = require("../Models/goals.model");
 const Wallet = require("../Models/wallet.model");
 const Transaction = require("../Models/expenses.models");
 
-// ─── Save a new goal ───────────────────────────────────────
-// @route  POST /api/save-goal
-// @access Private
+// Priority sort order - high comes first, then medium, then low
+const PRIORITY_ORDER = { high: 1, medium: 2, low: 3 };
+
+// =============================================================
+// FUNCTION 1: saveGoal
+// -------------------------------------------------------------
+// Creates a new financial goal for the logged-in user.
+// Required fields: goalName, targetAmount, priority, deadline
+// timeframe has been removed from this feature.
+//
+// Route:  POST /api/save-goal
+// Access: Private (requires JWT token)
+// =============================================================
 const saveGoal = async (req, res) => {
   try {
-    const { goalName, targetAmount, timeframe, priority, deadline } = req.body;
+    // pull out only the fields we need (timeframe removed)
+    const { goalName, targetAmount, priority, deadline } = req.body;
 
-    if (!goalName || !targetAmount || !timeframe || !priority || !deadline) {
+    // check all required fields are present
+    if (!goalName || !targetAmount || !priority || !deadline) {
       return res.status(400).json({
         success: false,
         message:
-          "goalName, targetAmount, timeframe, priority, and deadline are all required.",
+          "goalName, targetAmount, priority, and deadline are all required.",
       });
     }
 
+    // targetAmount must be a positive number
     if (isNaN(targetAmount) || Number(targetAmount) <= 0) {
       return res.status(400).json({
         success: false,
@@ -24,14 +55,7 @@ const saveGoal = async (req, res) => {
       });
     }
 
-    const validTimeframes = ["weekly", "monthly", "yearly"];
-    if (!validTimeframes.includes(timeframe)) {
-      return res.status(400).json({
-        success: false,
-        message: "timeframe must be one of: weekly, monthly, yearly.",
-      });
-    }
-
+    // priority must be one of these 3 values only
     const validPriorities = ["low", "medium", "high"];
     if (!validPriorities.includes(priority)) {
       return res.status(400).json({
@@ -40,6 +64,7 @@ const saveGoal = async (req, res) => {
       });
     }
 
+    // convert deadline string to a Date object and validate it
     const parsedDeadline = new Date(deadline);
     if (isNaN(parsedDeadline.getTime())) {
       return res.status(400).json({
@@ -54,11 +79,12 @@ const saveGoal = async (req, res) => {
       });
     }
 
+    // all validations passed - create and save the goal
+    // req.user._id comes from the auth middleware
     const newGoal = new Goal({
       userId: req.user._id,
       goalName: goalName.trim(),
       targetAmount: Number(targetAmount),
-      timeframe,
       priority,
       deadline: parsedDeadline,
     });
@@ -75,7 +101,6 @@ const saveGoal = async (req, res) => {
         savedAmount: newGoal.savedAmount,
         remainingAmount: newGoal.targetAmount,
         progressPercentage: "0.00%",
-        timeframe: newGoal.timeframe,
         priority: newGoal.priority,
         deadline: newGoal.deadline,
         createdAt: newGoal.createdAt,
@@ -90,14 +115,21 @@ const saveGoal = async (req, res) => {
   }
 };
 
-// ─── Get all goals for logged-in user ─────────────────────
-// @route  GET /api/goals
-// @access Private
+// =============================================================
+// FUNCTION 2: getGoals
+// -------------------------------------------------------------
+// Fetches all goals for the logged-in user sorted by priority.
+// high priority goals appear first, then medium, then low.
+// This way the frontend just displays goals in the order received
+// and the highest priority goal is always at the top.
+//
+// Route:  GET /api/goals
+// Access: Private (requires JWT token)
+// =============================================================
 const getGoals = async (req, res) => {
   try {
-    const goals = await Goal.find({ userId: req.user._id }).sort({
-      createdAt: -1,
-    });
+    // fetch all goals belonging to the logged-in user
+    const goals = await Goal.find({ userId: req.user._id });
 
     if (goals.length === 0) {
       return res.status(200).json({
@@ -107,7 +139,15 @@ const getGoals = async (req, res) => {
       });
     }
 
-    const goalsWithProgress = goals.map((goal) => {
+    // sort goals by priority: high → medium → low
+    // PRIORITY_ORDER maps each priority to a number (1, 2, 3)
+    // so sorting ascending puts high (1) before medium (2) before low (3)
+    const sortedGoals = goals.sort(
+      (a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority],
+    );
+
+    // calculate progress fields for each goal before sending to frontend
+    const goalsWithProgress = sortedGoals.map((goal) => {
       const remainingAmount = Math.max(goal.targetAmount - goal.savedAmount, 0);
       const progressPercentage = Math.min(
         ((goal.savedAmount / goal.targetAmount) * 100).toFixed(2),
@@ -120,7 +160,6 @@ const getGoals = async (req, res) => {
         savedAmount: goal.savedAmount,
         remainingAmount,
         progressPercentage: `${progressPercentage}%`,
-        timeframe: goal.timeframe,
         priority: goal.priority,
         deadline: goal.deadline,
         createdAt: goal.createdAt,
@@ -141,14 +180,21 @@ const getGoals = async (req, res) => {
   }
 };
 
-// ─── Add money toward a goal ───────────────────────────────
-// @route  POST /api/goals/:id/add-saving
-// @access Private
+// =============================================================
+// FUNCTION 3: addSaving
+// -------------------------------------------------------------
+// Deposits money into a specific goal.
+// Checks wallet balance first, deducts from wallet,
+// adds to goal savedAmount, and records a transaction.
+//
+// Route:  POST /api/goals/:id/add-saving
+// Access: Private (requires JWT token)
+// =============================================================
 const addSaving = async (req, res) => {
   try {
     const { amount, note, account } = req.body;
 
-    // 1. Validate amount
+    // validate amount
     if (!amount || isNaN(amount) || Number(amount) <= 0) {
       return res.status(400).json({
         success: false,
@@ -156,7 +202,7 @@ const addSaving = async (req, res) => {
       });
     }
 
-    // 2. Validate account
+    // account must be Cash or Bank (matches Transaction model enum)
     const validAccounts = ["Cash", "Bank"];
     if (!account || !validAccounts.includes(account)) {
       return res.status(400).json({
@@ -165,7 +211,7 @@ const addSaving = async (req, res) => {
       });
     }
 
-    // 3. Find the goal
+    // find the goal by ID from the URL params
     const goal = await Goal.findById(req.params.id);
     if (!goal) {
       return res.status(404).json({
@@ -174,7 +220,7 @@ const addSaving = async (req, res) => {
       });
     }
 
-    // 4. Ownership check
+    // make sure this goal belongs to the logged-in user
     if (goal.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -182,15 +228,15 @@ const addSaving = async (req, res) => {
       });
     }
 
-    // 5. Check if goal is already completed
+    // block deposits if goal is already completed
     if (goal.savedAmount >= goal.targetAmount) {
       return res.status(400).json({
         success: false,
-        message: `This goal is already completed! No more deposits needed.`,
+        message: "This goal is already completed! No more deposits needed.",
       });
     }
 
-    // 6. Check wallet balance
+    // check if user has enough balance in their wallet
     const wallet = await Wallet.findOne({ userID: req.user._id });
     if (!wallet) {
       return res.status(404).json({
@@ -202,21 +248,21 @@ const addSaving = async (req, res) => {
     if (wallet.balance < Number(amount)) {
       return res.status(400).json({
         success: false,
-        message: `Insufficient balance. Your wallet has $${wallet.balance} but you tried to deposit $${amount}.`,
+        message: `Insufficient balance. Your wallet has Rs. ${wallet.balance} but you tried to deposit amount Rs. ${amount}.`,
       });
     }
 
-    // 7. Deduct from wallet
+    // deduct from wallet
     const previousBalance = wallet.balance;
     wallet.balance -= Number(amount);
     wallet.UpdatedAt = Date.now();
     await wallet.save();
 
-    // 8. Add to goal savedAmount
+    // add to goal savedAmount
     goal.savedAmount += Number(amount);
     await goal.save();
 
-    // 9. Record in Transaction collection
+    // record this as an Expense transaction in the transaction history
     const transaction = await Transaction.create({
       userID: req.user._id,
       type: "Expense",
@@ -229,7 +275,7 @@ const addSaving = async (req, res) => {
       Date: Date.now(),
     });
 
-    // 10. Calculate updated progress
+    // calculate updated progress
     const remainingAmount = Math.max(goal.targetAmount - goal.savedAmount, 0);
     const progressPercentage = Math.min(
       ((goal.savedAmount / goal.targetAmount) * 100).toFixed(2),
@@ -241,7 +287,7 @@ const addSaving = async (req, res) => {
       success: true,
       message: isCompleted
         ? ` Congratulations! You completed your goal: "${goal.goalName}"!`
-        : ` $${amount} added to "${goal.goalName}". $${remainingAmount} remaining.`,
+        : ` Rs. ${amount} added to "${goal.goalName}". Rs. ${remainingAmount} remaining.`,
       data: {
         goal: {
           id: goal._id,
@@ -277,9 +323,16 @@ const addSaving = async (req, res) => {
   }
 };
 
-// ─── Edit a goal ───────────────────────────────────────────
-// @route  PUT /api/goals/:id
-// @access Private
+// =============================================================
+// FUNCTION 4: editGoal
+// -------------------------------------------------------------
+// Updates an existing goal's details.
+// Only updates fields that were actually sent in the request.
+// timeframe has been removed from editable fields.
+//
+// Route:  PUT /api/goals/:id
+// Access: Private (requires JWT token)
+// =============================================================
 const editGoal = async (req, res) => {
   try {
     const goal = await Goal.findById(req.params.id);
@@ -291,6 +344,7 @@ const editGoal = async (req, res) => {
       });
     }
 
+    // ownership check
     if (goal.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -298,23 +352,15 @@ const editGoal = async (req, res) => {
       });
     }
 
-    const { goalName, targetAmount, timeframe, priority, deadline } = req.body;
+    // pull out editable fields (timeframe, deadline removed)
+    const { goalName, targetAmount, priority } = req.body;
 
+    // validate only the fields that were sent
     if (targetAmount !== undefined) {
       if (isNaN(targetAmount) || Number(targetAmount) <= 0) {
         return res.status(400).json({
           success: false,
           message: "targetAmount must be a positive number.",
-        });
-      }
-    }
-
-    if (timeframe !== undefined) {
-      const validTimeframes = ["weekly", "monthly", "yearly"];
-      if (!validTimeframes.includes(timeframe)) {
-        return res.status(400).json({
-          success: false,
-          message: "timeframe must be one of: weekly, monthly, yearly.",
         });
       }
     }
@@ -329,28 +375,11 @@ const editGoal = async (req, res) => {
       }
     }
 
-    if (deadline !== undefined) {
-      const parsedDeadline = new Date(deadline);
-      if (isNaN(parsedDeadline.getTime())) {
-        return res.status(400).json({
-          success: false,
-          message: "deadline must be a valid date (e.g. 2025-12-31).",
-        });
-      }
-      if (parsedDeadline <= new Date()) {
-        return res.status(400).json({
-          success: false,
-          message: "deadline must be a future date.",
-        });
-      }
-    }
-
+    // build update object with only the fields that were provided
     const updates = {};
     if (goalName !== undefined) updates.goalName = goalName.trim();
     if (targetAmount !== undefined) updates.targetAmount = Number(targetAmount);
-    if (timeframe !== undefined) updates.timeframe = timeframe;
     if (priority !== undefined) updates.priority = priority;
-    if (deadline !== undefined) updates.deadline = new Date(deadline);
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({
@@ -359,6 +388,7 @@ const editGoal = async (req, res) => {
       });
     }
 
+    // apply updates - new:true returns updated document
     const updatedGoal = await Goal.findByIdAndUpdate(
       req.params.id,
       { $set: updates },
@@ -384,7 +414,6 @@ const editGoal = async (req, res) => {
         savedAmount: updatedGoal.savedAmount,
         remainingAmount,
         progressPercentage: `${progressPercentage}%`,
-        timeframe: updatedGoal.timeframe,
         priority: updatedGoal.priority,
         deadline: updatedGoal.deadline,
         updatedAt: updatedGoal.updatedAt,
@@ -399,12 +428,17 @@ const editGoal = async (req, res) => {
   }
 };
 
-// ─── Delete a goal ─────────────────────────────────────────
-// @route  DELETE /api/goals/:id
-// @access Private
+// =============================================================
+// FUNCTION 5: deleteGoal
+// -------------------------------------------------------------
+// Deletes a goal and refunds any saved money back to the wallet.
+// Also records the refund as an Income transaction.
+//
+// Route:  DELETE /api/goals/:id
+// Access: Private (requires JWT token)
+// =============================================================
 const deleteGoal = async (req, res) => {
   try {
-    // 1. Find the goal
     const goal = await Goal.findById(req.params.id);
 
     if (!goal) {
@@ -414,7 +448,7 @@ const deleteGoal = async (req, res) => {
       });
     }
 
-    // 2. Ownership check
+    // ownership check
     if (goal.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         success: false,
@@ -425,28 +459,26 @@ const deleteGoal = async (req, res) => {
     const refundAmount = goal.savedAmount;
     const goalName = goal.goalName;
 
-    // 3. Only refund if there is actually money saved
     let wallet = null;
     let transaction = null;
 
+    // only refund if there is actually money saved toward the goal
     if (refundAmount > 0) {
-      // 4. Find the wallet
       wallet = await Wallet.findOne({ userID: req.user._id });
 
       if (!wallet) {
         return res.status(404).json({
           success: false,
-          message: "Wallet not found. Cannot refund saved amount.",
+          message: "Wallet not found. Could not refund saved amount.",
         });
       }
 
-      // 5. Refund the savedAmount back to wallet
-      const previousBalance = wallet.balance;
+      // add saved amount back to wallet
       wallet.balance += refundAmount;
       wallet.UpdatedAt = Date.now();
       await wallet.save();
 
-      // 6. Record the refund as an Income transaction so it shows in transaction history
+      // record the refund as Income in transaction history
       transaction = await Transaction.create({
         userID: req.user._id,
         type: "Income",
@@ -458,13 +490,11 @@ const deleteGoal = async (req, res) => {
       });
     }
 
-    // 7. Delete the goal
     await goal.deleteOne();
 
-    // 8. Build response message
     const message =
       refundAmount > 0
-        ? `Goal "${goalName}" deleted. $${refundAmount} saved amount has been refunded back to your wallet.`
+        ? `Goal "${goalName}" deleted. Rs. ${refundAmount} has been refunded back to your wallet.`
         : `Goal "${goalName}" deleted successfully. No savings to refund.`;
 
     res.status(200).json({
@@ -473,11 +503,7 @@ const deleteGoal = async (req, res) => {
       data: {
         deletedGoal: goalName,
         refundAmount,
-        ...(wallet && {
-          wallet: {
-            newBalance: wallet.balance,
-          },
-        }),
+        ...(wallet && { wallet: { newBalance: wallet.balance } }),
         ...(transaction && {
           transaction: {
             id: transaction._id,

@@ -1,6 +1,5 @@
 const express = require("express");
 const passport = require("passport");
-const createPassword = require("../LoginWithGoogle/loginWithGoogle.password");
 const Authentication = require("../Middleware/auth.middleware");
 const jwt= require("jsonwebtoken")
 const router = express.Router();
@@ -44,11 +43,12 @@ router.get(
           token: token,
         });
 
+          return res.redirect("http://localhost:5173/dashboard");
+
     } catch (error) {
       res.status(500).json({ message: "Internal server error in google" });
     }
   }
 );
 
-router.post("/loginwithgoogle/createPassword",createPassword)
 module.exports = router;    
