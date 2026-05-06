@@ -8,7 +8,6 @@ const handleVoiceCommand = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Voice text is required"
-        
       });
     }
 
@@ -23,7 +22,7 @@ const handleVoiceCommand = async (req, res) => {
       });
     }
 
-    // Return the parsed command without saving (frontend will handle saving)
+    // Return the parsed command for frontend to fill form and confirm
     return res.status(200).json({
       success: true,
       message: "Voice command parsed successfully",

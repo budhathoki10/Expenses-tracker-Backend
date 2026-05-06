@@ -19,14 +19,14 @@ const AIModelOllama = async (Prompt) => {
   const response = await ollama.generate({
     model: OLLAMA_MODEL,
     prompt: Prompt,
-    stream: true,
+    stream: false,
   });
   return response.response;
 };
 
 const AIModelGemini = async (Prompt) => {
   const ai = new GoogleGenerativeAI(GOOGLE_API_KEY);
-  const model = ai.getGenerativeModel({ model: "	gemini-3-flash-preview" });
+  const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" });
   const result = await model.generateContent({
     contents: [{ role: "user", parts: [{ text: Prompt }] }],
   });
@@ -39,8 +39,7 @@ const formatText = (text) => {
     .replace(/\*\*(.*?)\*\*/g, "$1")
     .replace(/\*(.*?)\*/g, "$1")
     .replace(/^[-*•]\s+/gm, "")
-    .replace(/`{1,3}/g, "")
-.replace(/\n/g, "<br>"); 
+    .replace(/`{1,3}/g, "");
 };
 
 const AIModel = async (Prompt) => {
