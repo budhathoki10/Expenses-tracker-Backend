@@ -478,6 +478,17 @@ const deleteGoal = async (req, res) => {
       wallet.UpdatedAt = Date.now();
       await wallet.save();
 
+      // Remove the Expense transactions that were created when money was
+      // added to this goal (category "Goal Saving", description contains
+      // the goal name). This reverses the expense records so the history
+      // accurately reflects the net spend after the goal is cancelled.
+      await Transaction.deleteMany({
+        userID: req.user._id,
+        type: "Expense",
+        category: "Goal Saving",
+        description: { $regex: goalName, $options: "i" },
+      });
+
       // record the refund as Income in transaction history
       transaction = await Transaction.create({
         userID: req.user._id,
