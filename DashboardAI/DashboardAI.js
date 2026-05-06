@@ -6,7 +6,8 @@ const AIModel = require("./AiModel");
 
 const DashboardAI= async(req,res)=>{
 try {
-    const usermessage= req.body;
+    const rawUserMessage = req.body?.message ?? req.query?.message ?? '';
+    const usermessage = typeof rawUserMessage === 'string' ? rawUserMessage.trim() : String(rawUserMessage);
     const now = new Date();
     const expenses = await ExpensesModel.find({ userID: req.user._id });
     const user = await userModel.findById(req.user._id);
@@ -100,6 +101,7 @@ const prompt = `You are a personal finance advisor analyzing monthly expenses fo
 
 **User Information:**
 - Name: ${user.userName}
+- this Month data: 
 - Total Monthly Expense: Rs ${totalExpense || 0}
 - Total Monthly Income: Rs ${totalIncome || 0}
 - Current Month: ${now.toLocaleString('default', { month: 'long', year: 'numeric' })}
@@ -119,34 +121,18 @@ ${topCategoriesText}
 
 ---
 
+**note: Answer must be short and focused on the user request.**
+
 **Task:**
-Analyze this user's spending pattern and provide:
+Use the user's expense data to answer exactly what the user asks. If the user asks a specific question, respond to that question only and do not add unrelated analysis, plans, or next month recommendations.
 
-if a user ask about his wallet like what are his expenses and how much money he has in his wallet then you can provide the data of his wallet and expenses but if he ask about how to save money or how to reduce his expenses then you can provide him with the suggestions to save money and reduce his expenses.
-use all this and combine and provide a answer in a short and sweet way. 
-   - Is their spending reasonable or excessive?
-   - Are they overspending in any area?
+If the user asks for a general overview, provide a concise monthly expense trend summary in plain paragraph form.
 
-2. **Category-wise Analysis** (for each category)
-   - Identify which categories are essential vs non-essential
-   - Point out categories where they're spending too much
-   - Suggest specific percentage to reduce (be realistic, not extreme)
+If the user asks about savings or expense reduction, give a short single-paragraph recommendation with realistic percentages or amounts based on the current expense data.
 
-3. **Actionable Savings Plan for Next Month**
-   - Suggest 3-5 specific actions to reduce expenses
-   - Mention exact categories to cut down
-   - Provide realistic target amounts to save
-   - Give practical tips (e.g., "Cook at home 3 times a week instead of eating out")
+If the user asks about wallet balance or expense totals, return just those details clearly without extra suggestions.
 
-4. **Priority Ranking**
-   - List categories from "Must Keep" to "Can Reduce" to "Should Cut"
-
-5. **Next Month Budget Recommendation**
-   - Suggest category-wise budget for next month
-   - Total recommended expense for next month
-   - Expected savings amount
-
-- if user ask about specific question that answer that only no need to explain all his wallet and next week plan  
+Keep the answer short and sweet, no more than 4 sentences.
 
 **Guidelines:**
 - Be honest but encouraging
@@ -174,7 +160,8 @@ Write ONLY in plain paragraph text. Strict rules:
 - Start directly with the analysis, no greetings or titles
 - greet the user by their name for first time only
 
-**User Message:** ${usermessage?.message || ''}
+- if the user say thank you, i got it or whatever then respond with "You're welcome! If you have any more questions about your expenses or need further advice, feel free to ask. I'm here to help you manage your finances better!"
+**User Message:** ${usermessage || ''}
 
 
 
@@ -185,7 +172,7 @@ Write ONLY in plain paragraph text. Strict rules:
 const result= await AIModel(prompt);
 
 
-res.status(200).pipe({
+res.status(200).json({
     success:true,
     message:"AI analysis generated successfully",
     data:result
@@ -194,9 +181,10 @@ res.status(200).pipe({
     
     
 } catch (error) {
+    console.error("DashboardAI error:", error);
     res.status(500).json({ 
         success:false,
-        message: "Internal server error" 
+        message: "Internal server error found" 
     });
 }
 
