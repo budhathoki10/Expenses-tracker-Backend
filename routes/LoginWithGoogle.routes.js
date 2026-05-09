@@ -23,7 +23,6 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     try {
-
       const token = jwt.sign(
         {
           id: req.user._id,
@@ -35,16 +34,9 @@ router.get(
         }
       );
 
-      res
-        .cookie("Cookie-token", token)
-        .status(200)
-        .json({
-          message: "User logged in successfully",
-          token: token,
-        });
+      res.cookie("Cookie-token", token, { httpOnly: true, secure: false });
 
-          return res.redirect("http://localhost:5173/dashboard");
-
+      return res.redirect(`http://localhost:5173/dashboard?token=${token}`);
     } catch (error) {
       res.status(500).json({ message: "Internal server error in google" });
     }
