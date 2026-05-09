@@ -49,7 +49,7 @@ app.use(
 );
 // app.use(cors())
 // allow the cors so that frontend can integrate api
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173","http://localhost:5000"];
 
 app.use(
   cors({
