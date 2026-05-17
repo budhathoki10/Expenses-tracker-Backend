@@ -16,12 +16,23 @@ const Authentication = async (req, res, next) => {
       });
     }
 // verify if the user is original user or not
-    const verifytoken = jwt.verify(token, process.env.ACCESS_TOKEN_SECERET_KEY);
-    // console.log(verifytoken)
-    if (!verifytoken) {
-      return res.status(400).json({
+    const secretKey =
+      process.env.ACCESS_TOKEN_SECERET_KEY || process.env.ACCESS_TOKEN_SECRET_KEY;
+
+    if (!secretKey) {
+      return res.status(500).json({
         success: false,
-        message: "unauthorized, token not verified",
+        message: "server misconfiguration: access token secret not set",
+      });
+    }
+
+    let verifytoken;
+    try {
+      verifytoken = jwt.verify(token, secretKey);
+    } catch (err) {
+      return res.status(401).json({
+        success: false,
+        message: "unauthorized, token invalid or expired",
       });
     }
 // check if the login user is same as the previously login user or not

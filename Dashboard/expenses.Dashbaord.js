@@ -12,6 +12,7 @@ const ExpensesData = async (req, res) => {
   try {
     const parsedData = validateExpense.parse(req.body);
     const { type, amount, category, account, description } = parsedData;
+    const transactionDate = parsedData.Date || parsedData.date;
     // console.log("hello")
     // console.log("user id is",req.user._id)
 
@@ -29,6 +30,7 @@ const ExpensesData = async (req, res) => {
       return res.status(400).json({
         sucess: false,
         message: "Insufficient balance in the wallet",
+        balance: findWallet.balance,
       });
     }
 // make a new data for user 
@@ -39,6 +41,7 @@ const ExpensesData = async (req, res) => {
       category: category,
       account: account,
       description: description,
+      Date: transactionDate,
     });
     // save the data in mongodb
 
@@ -74,6 +77,9 @@ const ExpensesData = async (req, res) => {
       success: true,
       message: "Expense added Successfully",
       data: populatedData,
+      wallet: {
+        balance: findWallet.balance,
+      },
     });
   } catch (error) {
     // log the error for debugging

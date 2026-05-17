@@ -37,29 +37,49 @@ try {
       // });
 
 
-          const token = jwt.sign(
-            {
-              id: findUser._id,
-              email: findUser.email,
-              username: findUser.userName,
-            },
-            process.env.ACCESS_TOKEN_SECERET_KEY,
-            {
-              expiresIn: process.env.EXCESS_TOKEN_EXPIRE_IN,
-            },
-          );
-          res
-            .cookie("Cookie-token", token,{
-                httpOnly: true,
-        secure: false,   
-        sameSite: "none",   
+      const secretKey =
+        process.env.ACCESS_TOKEN_SECERET_KEY || process.env.ACCESS_TOKEN_SECRET_KEY;
+      const expiresIn =
+        process.env.EXCESS_TOKEN_EXPIRE_IN || process.env.ACCESS_TOKEN_EXPIRE_IN || "1d";
+
+      if (!secretKey) {
+        return res.status(500).json({
+          success: false,
+          message: "server misconfiguration: access token secret not set",
+        });
+      }
+
       
-            })
-            .status(200)
-            .json({ 
-              message: "OTP verified sucessfully",
-              token:token
-            });
+      const token = jwt.sign(
+        {
+          id: findUser._id,
+          email: findUser.email,
+          username: findUser.userName,
+        },
+        secretKey,
+        {
+          expiresIn: expiresIn,
+        },
+      );
+
+      const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      };
+
+      res
+        .cookie("Cookie-token", token, cookieOptions)
+        .status(200)
+        .json({
+          message: "OTP verified successfully",
+          token: token,
+          user: {
+            id: findUser._id,
+            email: findUser.email,
+            userName: findUser.userName,
+          },
+        });
 
 } catch (error) {
      return res.status(500).json({

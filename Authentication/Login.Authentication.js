@@ -34,28 +34,46 @@ const Login = async (req, res) => {
     }
 
     // return the token and save into cookie if all good. token conrains id and emaik
+    const secretKey =
+      process.env.ACCESS_TOKEN_SECERET_KEY || process.env.ACCESS_TOKEN_SECRET_KEY;
+    const expiresIn =
+      process.env.EXCESS_TOKEN_EXPIRE_IN || process.env.ACCESS_TOKEN_EXPIRE_IN || "1d";
+
+    if (!secretKey) {
+      return res.status(500).json({
+        success: false,
+        message: "server misconfiguration: access token secret not set",
+      });
+    }
+
     const token = jwt.sign(
       {
         id: findEmail._id,
         email: findEmail.email,
         username: findEmail.userName,
       },
-      process.env.ACCESS_TOKEN_SECERET_KEY,
+      secretKey,
       {
-        expiresIn: process.env.EXCESS_TOKEN_EXPIRE_IN,
+        expiresIn: expiresIn,
       },
     );
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    };
+
     // retunr the proper message
     res
-      .cookie("Cookie-token", token,{
-          httpOnly: true,
-  secure: false,   
-  sameSite: "none",   // required for cross-origin cookies
-
-      })
+      .cookie("Cookie-token", token, cookieOptions)
       .status(200)
       .json({ message: "user logged in sucessfully",
-        token:token
+        token:token,
+        user: {
+          id: findEmail._id,
+          email: findEmail.email,
+          userName: findEmail.userName,
+        },
       });
   } catch (error) {
      res

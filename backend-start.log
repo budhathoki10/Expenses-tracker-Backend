@@ -1,0 +1,8 @@
+
+> expensetracker@1.0.0 dev
+> node app.js
+
+[dotenv@17.3.1] injecting env (14) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+ollama model is: llama3.2
+Server running at http://localhost:5000
+Successfully connected to MongoDB
