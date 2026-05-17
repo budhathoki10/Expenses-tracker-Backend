@@ -6,3 +6,42 @@
 ollama model is: llama3.2
 Server running at http://localhost:5000
 Successfully connected to MongoDB
+Trying Ollama at http://localhost:11434 with model llama3.2
+Ollama responded successfully.
+AI Response for voice command: {"action":"add_expense","amount":1000,"category":"Education","description":"Education expense","account":"Cash"}
+Parsed JSON: {
+  action: 'add_expense',
+  amount: 1000,
+  category: 'Education',
+  description: 'Education expense',
+  account: 'Cash'
+}
+sending emailto np03cs4a240072@heraldcollege.edu.np
+sended email
+hellpoooo
+Trying Ollama at http://localhost:11434 with model llama3.2
+Ollama responded successfully.
+hellpoooo
+Trying Ollama at http://localhost:11434 with model llama3.2
+Ollama responded successfully.
+hellpoooo
+Trying Ollama at http://localhost:11434 with model llama3.2
+Ollama responded successfully.
+Trying Ollama at http://localhost:11434 with model llama3.2
+Ollama responded successfully.
+AI Response for voice command: {"error": "Unable to parse command"}
+Parsed JSON: { error: 'Unable to parse command' }
+sending emailto np03cs4a240072@heraldcollege.edu.np
+sended email
+Trying Ollama at http://localhost:11434 with model llama3.2
+Ollama responded successfully.
+AI Response for voice command: {"action":"add_income","amount":100000,"category":"Bonus","description":"Bonus income","account":"Cash"}
+Parsed JSON: {
+  action: 'add_income',
+  amount: 100000,
+  category: 'Bonus',
+  description: 'Bonus income',
+  account: 'Cash'
+}
+sending emailto np03cs4a240072@heraldcollege.edu.np
+sended email
