@@ -1,19 +1,19 @@
 /*
- * saveGoalController.js
- *
- * Handles all backend logic for the goal-based savings feature.
- *
- * Functions:
- *   1. saveGoal   - creates a new goal (no timeframe, has priority)
- *   2. getGoals   - fetches all goals sorted by priority (high → medium → low)
- *   3. addSaving  - deposits money into a goal (checks wallet balance first)
- *   4. editGoal   - updates an existing goal's details
- *   5. deleteGoal - deletes a goal and refunds saved money back to wallet
- *
- * Models used:
- *   - Goal        (../Models/goals.model)
- *   - Wallet      (../Models/wallet.model)
- *   - Transaction (../Models/expenses.models)
+ saveGoalController.js
+
+ Handles all backend logic for the goal-based savings feature.
+
+ Functions:
+   1. saveGoal   creates a new goal (no timeframe, has priority)
+   2. getGoals   fetches all goals sorted by priority (high → medium → low)
+   3. addSaving  deposits money into a goal (checks wallet balance first)
+   4. editGoal   updates an existing goal's details
+   5. deleteGoal deletes a goal and refunds saved money back to wallet
+
+ Models used:
+   Goal        (../Models/goals.model)
+   Wallet      (../Models/wallet.model)
+   Transaction (../Models/expenses.models)
  */
 
 const Goal = require("../Models/goals.model");
@@ -23,16 +23,14 @@ const Transaction = require("../Models/expenses.models");
 // Priority sort order - high comes first, then medium, then low
 const PRIORITY_ORDER = { high: 1, medium: 2, low: 3 };
 
-// =============================================================
-// FUNCTION 1: saveGoal
-// -------------------------------------------------------------
-// Creates a new financial goal for the logged-in user.
-// Required fields: goalName, targetAmount, priority, deadline
-// timeframe has been removed from this feature.
-//
-// Route:  POST /api/save-goal
-// Access: Private (requires JWT token)
-// =============================================================
+/* FUNCTION 1: saveGoal
+  Creates a new financial goal for the logged-in user.
+  Required fields: goalName, targetAmount, priority, deadline
+  timeframe has been removed from this feature.
+
+  Route:  POST /api/save-goal
+  Access: Private (requires JWT token)
+*/
 const saveGoal = async (req, res) => {
   try {
     // pull out only the fields we need (timeframe removed)
@@ -114,18 +112,16 @@ const saveGoal = async (req, res) => {
     });
   }
 };
+/*
+FUNCTION 2: getGoals
+  Fetches all goals for the logged-in user sorted by priority.
+  high priority goals appear first, then medium, then low.
+  This way the frontend just displays goals in the order received
+  and the highest priority goal is always at the top.
 
-// =============================================================
-// FUNCTION 2: getGoals
-// -------------------------------------------------------------
-// Fetches all goals for the logged-in user sorted by priority.
-// high priority goals appear first, then medium, then low.
-// This way the frontend just displays goals in the order received
-// and the highest priority goal is always at the top.
-//
-// Route:  GET /api/goals
-// Access: Private (requires JWT token)
-// =============================================================
+  Route:  GET /api/goals
+  Access: Private (requires JWT token)
+*/
 const getGoals = async (req, res) => {
   try {
     // fetch all goals belonging to the logged-in user
@@ -180,16 +176,15 @@ const getGoals = async (req, res) => {
   }
 };
 
-// =============================================================
-// FUNCTION 3: addSaving
-// -------------------------------------------------------------
-// Deposits money into a specific goal.
-// Checks wallet balance first, deducts from wallet,
-// adds to goal savedAmount, and records a transaction.
-//
-// Route:  POST /api/goals/:id/add-saving
-// Access: Private (requires JWT token)
-// =============================================================
+/*
+  FUNCTION 3: addSaving
+  Deposits money into a specific goal.
+  Checks wallet balance first, deducts from wallet,
+  adds to goal savedAmount, and records a transaction.
+
+  Route:  POST /api/goals/:id/add-saving
+  Access: Private (requires JWT token)
+*/
 const addSaving = async (req, res) => {
   try {
     const { amount, note, account } = req.body;
@@ -323,16 +318,15 @@ const addSaving = async (req, res) => {
   }
 };
 
-// =============================================================
-// FUNCTION 4: editGoal
-// -------------------------------------------------------------
-// Updates an existing goal's details.
-// Only updates fields that were actually sent in the request.
-// timeframe has been removed from editable fields.
-//
-// Route:  PUT /api/goals/:id
-// Access: Private (requires JWT token)
-// =============================================================
+/*
+  FUNCTION 4: editGoal
+  Updates an existing goal's details.
+  Only updates fields that were actually sent in the request.
+  timeframe has been removed from editable fields.
+
+  Route:  PUT /api/goals/:id
+  Access: Private (requires JWT token)
+*/
 const editGoal = async (req, res) => {
   try {
     const goal = await Goal.findById(req.params.id);
@@ -428,15 +422,14 @@ const editGoal = async (req, res) => {
   }
 };
 
-// =============================================================
-// FUNCTION 5: deleteGoal
-// -------------------------------------------------------------
-// Deletes a goal and refunds any saved money back to the wallet.
-// Also records the refund as an Income transaction.
-//
-// Route:  DELETE /api/goals/:id
-// Access: Private (requires JWT token)
-// =============================================================
+/*
+  FUNCTION 5: deleteGoal
+  Deletes a goal and refunds any saved money back to the wallet.
+  Also records the refund as an Income transaction.
+  
+  Route:  DELETE /api/goals/:id
+  Access: Private (requires JWT token)
+*/
 const deleteGoal = async (req, res) => {
   try {
     const goal = await Goal.findById(req.params.id);
