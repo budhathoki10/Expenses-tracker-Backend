@@ -5,7 +5,7 @@ const MAX_NOTE_LENGTH = 160;
 
 const transactionDate = z.coerce
   .date({ error: "Enter a valid date" })
-  .refine((date) => date <= new Date(), "Date cannot be in the future");
+  .refine((date) => date >  new Date(), "Date cannot be in the future");
 
 const validateExpense = z.object({
   type: z.enum(["Income", "Expense"], {
