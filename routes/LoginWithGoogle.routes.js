@@ -4,6 +4,11 @@ const Authentication = require("../Middleware/auth.middleware");
 const jwt= require("jsonwebtoken")
 const router = express.Router();
 
+const getFrontendUrl = () =>
+  (process.env.FRONTEND_URL ||
+    process.env.CLIENT_URL ||
+    "https://expensetracker-azure-two.vercel.app").replace(/\/$/, "");
+
 
 router.get(
   "/loginwithgoogle",
@@ -28,19 +33,23 @@ router.get(
           id: req.user._id,
           email: req.user.email,
         },
-        process.env.ACCESS_TOKEN_SECERET_KEY,
+        process.env.ACCESS_TOKEN_SECERET_KEY || process.env.ACCESS_TOKEN_SECRET_KEY,
         {
-          expiresIn: process.env.EXCESS_TOKEN_EXPIRE_IN,
+          expiresIn: process.env.EXCESS_TOKEN_EXPIRE_IN || process.env.ACCESS_TOKEN_EXPIRE_IN || "1d",
         }
       );
 
-      res.cookie("Cookie-token", token, { httpOnly: true, secure: false });
+      res.cookie("Cookie-token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      });
 
-      return res.redirect(`http://localhost:5173/dashboard?token=${token}`);
+      return res.redirect(`${getFrontendUrl()}/dashboard?token=${token}`);
     } catch (error) {
       res.status(500).json({ message: "Internal server error in google" });
     }
   }
 );
 
-module.exports = router;    
+module.exports = router;

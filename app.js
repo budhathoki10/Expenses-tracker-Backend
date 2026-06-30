@@ -47,13 +47,31 @@ app.use(
     saveUninitialized: false,
   }),
 );
-// app.use(cors())
 // allow the cors so that frontend can integrate api
-const allowedOrigins = ["http://localhost:5173","http://localhost:5000"];
+const defaultAllowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5000",
+  "https://expensetracker-azure-two.vercel.app",
+];
+const configuredAllowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.CLIENT_URL,
+  process.env.CORS_ORIGIN,
+  process.env.CORS_ALLOWED_ORIGINS,
+]
+  .flatMap((origin) => String(origin || "").split(","))
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const allowedOrigins = [...new Set([...defaultAllowedOrigins, ...configuredAllowedOrigins])];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     credentials: true,
   }),
 );
