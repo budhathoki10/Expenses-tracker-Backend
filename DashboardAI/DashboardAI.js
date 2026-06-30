@@ -1,6 +1,5 @@
 const ExpensesModel = require("../Models/expenses.models");
 const userModel= require("../Models/user.model");
-const { Configuration, OpenAIApi } = require("openai");
 const AIModel = require("./AiModel");
 
 

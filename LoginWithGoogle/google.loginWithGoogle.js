@@ -23,7 +23,6 @@ const configureGoogleAuth = (req, res) => {
             userName: profile.displayName,
             email: email,
             image: profile.photos[0].value,
-            OTPexpiryDate: null,
           });
           await checkuser.save();
           done(null, checkuser);

@@ -8,7 +8,6 @@ const session = require("express-session");
 const cors = require("cors");
 
 const register = require("./routes/register.route");
-const verifyOTP = require("./routes/verifyOTP.route");
 const login = require("./routes/login.routes");
 const loginWithGoogle = require("./routes/LoginWithGoogle.routes");
 const LogoutRouters = require("./routes/Logout.routes");
@@ -65,7 +64,6 @@ configureGoogleAuth();
 
 // using all the route with prefix api
 app.use("/api", register);
-app.use("/api", verifyOTP);
 app.use("/api", login);
 app.use("/api", LogoutRouters);
 app.use("/api", loginWithGoogle);

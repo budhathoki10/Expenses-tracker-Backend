@@ -1,27 +1,47 @@
-const { Ollama } = require("ollama");
+const OpenAI = require("openai");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const OLLAMA_URL = process.env.OLLAMA_URL;
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "llama2";
-console.log("ollama model is:", OLLAMA_MODEL);
+const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
+const NVIDIA_BASE_URL = process.env.NVIDIA_BASE_URL || "https://integrate.api.nvidia.com/v1";
+const NVIDIA_MODEL = process.env.NVIDIA_MODEL || "nvidia/nemotron-3-ultra-550b-a55b";
 const GOOGLE_API_KEY = process.env.GOOGLE_API;
 
-if (!OLLAMA_URL) {
-  throw new Error("Missing OLLAMA_URL in environment configuration");
+if (!NVIDIA_API_KEY) {
+  console.warn("Warning: NVIDIA_API_KEY is not set, NVIDIA AI calls will fail");
 }
 if (!GOOGLE_API_KEY) {
   console.warn("Warning: GOOGLE_API is not set, Gemini fallback may fail");
 }
 
-const ollama = new Ollama({ host: OLLAMA_URL });
-
-const AIModelOllama = async (Prompt) => {
-  const response = await ollama.generate({
-    model: OLLAMA_MODEL,
-    prompt: Prompt,
-    stream: false,
+const createNvidiaClient = () =>
+  new OpenAI({
+    apiKey: NVIDIA_API_KEY,
+    baseURL: NVIDIA_BASE_URL,
   });
-  return response.response;
+
+const AIModelNvidia = async (Prompt) => {
+  if (!NVIDIA_API_KEY) {
+    throw new Error("Missing NVIDIA_API_KEY in environment configuration");
+  }
+
+  const openai = createNvidiaClient();
+  const completion = await openai.chat.completions.create({
+    model: NVIDIA_MODEL,
+    messages: [{ role: "user", content: Prompt }],
+    temperature: 1,
+    top_p: 0.95,
+    max_tokens: 16384,
+    reasoning_budget: 16384,
+    chat_template_kwargs: { enable_thinking: true },
+    stream: true,
+  });
+
+  let output = "";
+  for await (const chunk of completion) {
+    output += chunk.choices[0]?.delta?.content || "";
+  }
+
+  return output;
 };
 
 const AIModelGemini = async (Prompt) => {
@@ -44,14 +64,14 @@ const formatText = (text) => {
 
 const AIModel = async (Prompt) => {
   try {
-    console.log("Trying Ollama at", OLLAMA_URL, "with model", OLLAMA_MODEL);
-    const text = await AIModelOllama(Prompt);
-    console.log("Ollama responded successfully.");
+    console.log("Trying NVIDIA AI with model", NVIDIA_MODEL);
+    const text = await AIModelNvidia(Prompt);
+    console.log("NVIDIA AI responded successfully.");
     return formatText(text);
-  } catch (ollamaError) {
-    console.warn("Ollama failed:", ollamaError.message);
-    if (ollamaError.response) {
-      console.warn("Ollama response body:", ollamaError.response.data || ollamaError.response.text);
+  } catch (nvidiaError) {
+    console.warn("NVIDIA AI failed:", nvidiaError.message);
+    if (nvidiaError.response) {
+      console.warn("NVIDIA AI response body:", nvidiaError.response.data || nvidiaError.response.text);
     }
     console.log("Falling back to Gemini...");
     try {
@@ -63,7 +83,7 @@ const AIModel = async (Prompt) => {
       if (geminiError.response) {
         console.error("Gemini response body:", geminiError.response.data || geminiError.response.text);
       }
-      throw new Error(`Both AI models failed. Ollama: ${ollamaError.message} | Gemini: ${geminiError.message}`);
+      throw new Error(`Both AI models failed. NVIDIA: ${nvidiaError.message} | Gemini: ${geminiError.message}`);
     }
   }
 };

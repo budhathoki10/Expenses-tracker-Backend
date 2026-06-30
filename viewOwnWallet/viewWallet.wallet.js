@@ -10,7 +10,7 @@ const walletData= await walletModel.findOneAndUpdate(
     },
   },
   {
-    new: true,
+    returnDocument: "after",
     upsert: true,
     setDefaultsOnInsert: true,
   },

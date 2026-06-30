@@ -15,13 +15,6 @@ const ChangePassword = async (req, res) => {
         message: "Cannot find the password",
       });
     }
-    
-    if(data.OTP!=null){
-      return res.status(400).json({
-        message: "please verify your otp first",
-      });
-    }
-    
     if (password != confirmpassword) {
       return res.status(401).json({
         success: false,

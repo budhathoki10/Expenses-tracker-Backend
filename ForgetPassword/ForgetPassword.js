@@ -1,9 +1,5 @@
 const userModel = require("../Models/user.model");
-const bcrypt = require("bcryptjs");
-const validatePassword = require("../Validation/password.validation");
 const z = require("zod");
-const generateOTP = require("../OTP/generateOTP");
-const emailHandler = require("../EmailWiring/email.wiring");
 const ForgetPassword= async(req,res)=>{
 
 try {
@@ -25,19 +21,15 @@ try {
             message:"Cannot find this email"
         }) 
     }
-    const otp= await generateOTP(email)
-    // console.log("otp is otp",otp)
-    // console.log("hello world")
-    await emailHandler.ForgetPassword(checkEmail, otp)
-    //console.log("Sucessfully")
+
     return res.status(200).json({
         success:true,
-        message:"OTP sended successfully"
+        message:"Email verified. Continue to reset password"
     })
 } catch (error) {
             return res.status(500).json({
             success:false,
-            message:"internal server error in forgetssssssssssssss passssword"
+            message:"internal server error in forget password"
         })
 }
 

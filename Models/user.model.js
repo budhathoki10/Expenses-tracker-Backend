@@ -16,14 +16,6 @@ const userSchema = mongoose.Schema(
       type: String,
       default:null
     },
-    OTP: {
-      type: String,
-      default: null,
-    },
-    OTPexpiryDate: {
-      type: Date,
-      default: Date.now,
-    },
     image: {
       type: String,
     },

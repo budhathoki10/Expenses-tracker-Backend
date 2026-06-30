@@ -382,11 +382,11 @@ const editGoal = async (req, res) => {
       });
     }
 
-    // apply updates - new:true returns updated document
+    // apply updates and return the updated document
     const updatedGoal = await Goal.findByIdAndUpdate(
       req.params.id,
       { $set: updates },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
 
     const remainingAmount = Math.max(

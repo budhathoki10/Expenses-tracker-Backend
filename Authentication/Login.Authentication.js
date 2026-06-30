@@ -15,13 +15,6 @@ const Login = async (req, res) => {
         message: "this email is not registered yet",
       });
     }
-    // cehck if user verify the otp or not
-    if(findEmail.OTP!=null){
- return res.status(400).json({
-        message: "please verify your otp first",
-      });
-    }
-
     // check if the password is same as the database password or not
     const checkPassword = await bcrypt.compare(
       password,

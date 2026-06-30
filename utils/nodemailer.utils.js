@@ -1,5 +1,4 @@
 const transporter = require("../Nodemailer/sendemail.Nodemailer");
-// const otpEmailTemplate = require("../Email/OTPtemplate.Email");
 const sendEmail = async (email, subject, content) => {
   try {
     console.log("sending emailto",email)
